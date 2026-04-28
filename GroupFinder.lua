@@ -309,20 +309,9 @@ function GF_LoadVariables()
 	for i=1,#GF_SystemMessageFilters do if GF_SystemMessageFilters[i] then lfs,lfe = strfind(" "..GF_SystemMessageFilters[i],"%s",1,true) if lfs then GF_SystemMessageFilters[i] = strsub(GF_SystemMessageFilters[i],1,lfs-2).."(%a+)"..strsub(GF_SystemMessageFilters[i],lfe) end end end
 	for i=1,#GF_ServerMessageFilters do if GF_ServerMessageFilters[i] then lfs,lfe = strfind(" "..GF_ServerMessageFilters[i],"%s",1,true) if lfs then GF_ServerMessageFilters[i] = strsub(GF_ServerMessageFilters[i],1,lfs-2).."(%a+)"..strsub(GF_ServerMessageFilters[i],lfe) end end end
 	for i=1,#GF_LootFilters do
-		lfs,lfe = strfind(" "..GF_LootFilters[i],"%s|Hitem",1,true)
-		if lfs then
-			GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-2)
-			lfs,lfe = strfind(" "..GF_LootFilters[i],"%s",1,true) if lfs then GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-2).."(%a+)"..strsub(GF_LootFilters[i],lfe) end
-			lfs,lfe = strfind(" "..GF_LootFilters[i],"%d",1,true) if lfs then GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-2).."(%d*)" end
-		else
-			lfs,lfe = strfind(" "..GF_LootFilters[i],"%s.",1,true)
-			if lfs then
-				GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-2)
-				lfs,lfe = strfind(" "..GF_LootFilters[i],"%s",1,true) if lfs then GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-2).."(%a+)"..strsub(GF_LootFilters[i],lfe) end
-			end
-		end
+		lfs = 1 while true do lfs,lfe = strfind(GF_LootFilters[i],"%s",lfs,true) if lfs then if lfs == 1 then GF_LootFilters[i] = "(.+)"..strsub(GF_LootFilters[i],lfe+1) else GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-1).."(.+)"..strsub(GF_LootFilters[i],lfe+1) end lfs = lfe + 6 else break end end
+		lfs = 1 while true do lfs,lfe = strfind(GF_LootFilters[i],"%d",lfs,true) if lfs then if lfs == 1 then GF_LootFilters[i] = "(%d+)"..strsub(GF_LootFilters[i],lfe+1) else GF_LootFilters[i] = strsub(GF_LootFilters[i],1,lfs-1).."(%d+)"..strsub(GF_LootFilters[i],lfe+1) end lfs = lfe + 4 else break end end
 	end
-
 	for i=1,#GF_Parser do
 		lfs = 1 while true do lfs,lfe = strfind(GF_Parser[i],"%s",lfs,true) if lfs then if lfs == 1 then GF_Parser[i] = "(.+)"..strsub(GF_Parser[i],lfe+1) else GF_Parser[i] = strsub(GF_Parser[i],1,lfs-1).."(.+)"..strsub(GF_Parser[i],lfe+1) end lfs = lfe + 6 else break end end
 		lfs = 1 while true do lfs,lfe = strfind(GF_Parser[i],"%d",lfs,true) if lfs then if lfs == 1 then GF_Parser[i] = "(%d+)"..strsub(GF_Parser[i],lfe+1) else GF_Parser[i] = strsub(GF_Parser[i],1,lfs-1).."(%d+)"..strsub(GF_Parser[i],lfe+1) end lfs = lfe + 4 else break end end
@@ -497,9 +486,9 @@ function GF_SetStringSize()
 	for i=1,#frameNames do getglobal(frameNames[i]):SetFont(fontName,GF_BaseFontSize) end
 	frameNames = { "GF_GetWhoTotalNames","GF_AnnounceToLFGButton","GF_GetWhoButton","GF_GetWhoSkipButton","GF_GetWhoWhisperButton","GF_GetWhoNameLabel","GF_ShowGroupsButton","GF_SettingsFrameButton","GF_PlayerNoteFrameOKButton",
 	"GF_QueuetoLFTButton","GF_PlayerNoteFrameDeleteButton","GF_ShowBlacklistButton","GF_LogFrameButton","GF_LFGFrameToggleButton","GF_GetWhoFrameToggleButton","GF_ConvertLogMessagesToURL","GF_UIScaleSliderUpdateButton",
-	"GF_ResetAllSettingsDialogCloseButton","GF_ShowGroupLogEntryFrameCloseButton","GF_ResetAllSettingsButton","GF_AddPlayerButton","GF_BlackListFramePageLabel","GF_WhisperLogButton","GF_GroupLogButton","GF_MinimapIconTextLabel",
+	"GF_ResetAllSettingsDialogCloseButton","GF_ShowGroupLogEntryFrameCloseButton","GF_ResetAllSettingsButton","GF_AddPlayerButton","GF_WhisperLogButton","GF_GroupLogButton",
 	"GF_AddPlayerFrameOkButton","GF_AddPlayerFrameCloseButton","GF_ResetAllSettingsDialogOkButton","GF_MinimapMessageMoverButton"}
-	--for i=1,#frameNames do getglobal(frameNames[i]):SetFont(fontName,fontSizeButton) end
+	--for i=1,#frameNames do getglobal(frameNames[i]):SetFont(fontName,fontSizeButton) end -- "GF_BlackListFramePageLabel", "GF_MinimapIconTextLabel",
 	frameNames = {"GF_LFGMyRole","GF_WorldAnnounceMessageTextLabel","GF_ShowGroupsInLabel","GF_ShowChatTypesLabel","GF_LogFrameInternalFrameTitle","GF_ShowMainFrameLabel",
 	"GF_GroupChannelNameTextLabel","GF_BlockListTextLabel","GF_ResultsLabel","GF_MessageAnchorButtonText", }
 	for i=1,#frameNames do getglobal(frameNames[i]):SetFont(fontName,fontSizeLarge) end
@@ -521,8 +510,8 @@ function GF_SetStringSize()
 		getglobal(frameNames[i].."High"):SetFont(fontName,GF_BaseFontSize)
 		getglobal(frameNames[i].."Low"):SetFont(fontName,GF_BaseFontSize)
 	end
-	--for i=1,25 do getglobal("GF_GroupHistoryLogPlayer"..i):SetFont(GF_BUTTONS_LIST["FontName"][GF_SavedVariables.fontname][2],GF_BaseFontSize) getglobal("GF_GroupHistoryLogPlayer"..i.."TextLabel"):SetFont(GF_BUTTONS_LIST["FontName"][GF_SavedVariables.fontname][2],GF_BaseFontSize) end
-	--for i=1,50 do getglobal("GF_GroupHistoryLogItem"..i):SetFont(GF_BUTTONS_LIST["FontName"][GF_SavedVariables.fontname][2],GF_BaseFontSize) getglobal("GF_GroupHistoryLogItem"..i.."TextLabel"):SetFont(GF_BUTTONS_LIST["FontName"][GF_SavedVariables.fontname][2],GF_BaseFontSize) end
+	for i=1,25 do getglobal("GF_GroupHistoryLogPlayer"..i):SetNormalFontObject(GameFontNormal) getglobal("GF_GroupHistoryLogPlayer"..i.."TextLabel"):SetFont(GF_BUTTONS_LIST["FontName"][GF_SavedVariables.fontname][2],GF_BaseFontSize) end
+	for i=1,50 do getglobal("GF_GroupHistoryLogItem"..i):SetNormalFontObject(GameFontNormal) getglobal("GF_GroupHistoryLogItem"..i.."TextLabel"):SetFont(GF_BUTTONS_LIST["FontName"][GF_SavedVariables.fontname][2],GF_BaseFontSize) end
 	GF_LogFilterDropdownButton:SetPoint("LEFT", "GF_LogFrameInternalFrameTitle", "RIGHT", 5, 0)
 	GF_LFGMyRoleLevelCheckButton:SetPoint("RIGHT", -1*getglobal(GF_LFGMyRoleLevelCheckButton:GetName().."TextLabel"):GetStringWidth() -2, -3)
 	GF_ChatFilterDropdownButton:SetPoint("TOPRIGHT", GF_MainFrameCloseButton, "BOTTOMRIGHT", -1*getglobal(GF_ChatFilterDropdownButton:GetName().."TextLabel"):GetStringWidth() -15, 6)
@@ -2676,7 +2665,7 @@ function GF_CheckForEmotes(arg1,arg2)
 end
 function GF_CheckForLoot(arg1) -- TODO: If an item is "WON" and then looted later, it will show the item twice? Add Green items but only show blue or better in scrolling chatframe. Put Green items at the end of the list(epics at top).
 	local wordString
-	local _,_,itemid = strfind(arg1,"|%x+|H(item:[%d+:]+)")
+	local _,_,itemid = strfind(arg1,"|+%x+|+H(item:[%d+:]+)")
 	if itemid then
 		local _,_,iQuality = GetItemInfo(itemid)
 		if iQuality == 0 then if not GF_SavedVariables.showloottexts then GF_PreviousMessage["SYSTEM"] = {} return end -- Block grey Items
@@ -3402,21 +3391,25 @@ function GF_GetTypes(arg1,showanyway)
 				wordString = wordTableGuild[i]
 				for k=1, j do wordString = wordString..wordTableGuild[i+k] end
 				if GF_WORD_GUILD[wordString] then
-					if j ~= 0 or strbyte(wordString) ~= 71 then foundGuild = foundGuild + GF_WORD_GUILD[wordString] if showanyway == true then print(wordString.." guild "..GF_WORD_GUILD[wordString]) end
-					elseif foundGuild < 100 then foundGuild = foundGuild + GF_WORD_GUILD[wordString] if showanyway == true then print(wordString.." guild "..GF_WORD_GUILD[wordString]) end end
-
 					if wordString == "G" then
-						if GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]]) end end
-						if GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]]) end end
-						if wordTable[i+j+2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]]) end end
-						if wordTable[i-2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]]) end end
-						if wordTable[i-3] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
-
-						if GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]]) end end
-						if GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-1]]) end end
-						if wordTable[i+j+2] and GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]]) end end
-						if wordTable[i-2] and GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]]) end end
-						if wordTable[i-3] and GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
+						if foundGuild < 100 then foundGuild = foundGuild + GF_WORD_GUILD[wordString] if showanyway == true then print(wordString.." guild "..GF_WORD_GUILD[wordString]) end end
+						if wordTableGuild[i+j+1] ~= "G" then
+							if GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]]) end end
+							if GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]]) end end
+							if wordTable[i+j+2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]]) end end
+							if wordTable[i+j+2] and GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]]) end end
+						end
+						if wordTableGuild[i-1] ~= "G" then
+							if GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]]) end end
+							if wordTable[i-2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]]) end end
+							if wordTable[i-3] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
+							if GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-1]]) end end
+							if wordTable[i-2] and GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]]) end end
+							if wordTable[i-3] and GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
+						end
+					else
+						foundGuild = foundGuild + GF_WORD_GUILD[wordString]
+						if showanyway == true then print(wordString.." guild "..GF_WORD_GUILD[wordString]) end
 					end
 				end
 			end
@@ -3918,7 +3911,6 @@ function GF_UpdateGroup() -- Get Group/Friends/Guildies information(turns off ig
 				GF_UpdateQueueLFTButton()
 			end
 		end
--- When I'm not in a group. Save TempData to zone. Start the save group process if there isn't already a timer and there is group activity. Otherwise do nothing.
 		if GF_NumPartyMembers == 1 then
 			local resetData
 			if not GF_PerCharVariables.groupfinishtimer then
@@ -3945,8 +3937,8 @@ function GF_UpdateGroup() -- Get Group/Friends/Guildies information(turns off ig
 				if groupstosave[1] then
 					GF_PerCharVariables.groupfinishtimer = { GetTime() + 120,groupstosave }
 					local wordString = ""
-					for i=1,#groupstosave do wordString = wordString..groupstosave[i]..", " end
-					DEFAULT_CHAT_FRAME:AddMessage(GF_NOT_IN_GROUP_SAVING..strsub(wordString,1,-3)..GF_IN_TWO_MINUTES,1,1,0.5)
+					for i=1,#groupstosave do if GF_PerCharVariables.CurrentGroup[GF_PerCharVariables.groupfinishtimer[2][i]][2] + 600 < time() then wordString = wordString..groupstosave[i]..", " end end
+					if wordString ~= "" then DEFAULT_CHAT_FRAME:AddMessage(GF_NOT_IN_GROUP_SAVING..strsub(wordString,1,-3)..GF_IN_TWO_MINUTES,1,1,0.5) end
 				end
 			end
 			if lastParty ~= 0 then -- If I left a group. Reset TempData if there is activity
