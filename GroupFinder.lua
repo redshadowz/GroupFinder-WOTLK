@@ -2617,13 +2617,13 @@ end
 function GF_WHISPER(event,arg1,arg2,arg8,arg9,arg12)
 	if not GF_WhoTable[GF_RealmName][arg2] and GF_PlayingOnTurtle and GF_SavedVariables.usewhoongroups and GF_SavedVariables.usefriendslist then GF_GetWhoData(arg2,arg12) end
 	GF_WhisperReceivedAddToWhisperHistoryList(arg1,arg2,event)
-	table.insert(DEFAULT_CHAT_FRAME.editBox.lastTell,1,arg2)
+	ChatEdit_SetLastTellTarget(arg2)
 	GF_PreviousMessage[arg2] = {true}
 end
 function GF_WHISPER_INFORM(event,arg1,arg2,arg8,arg9,arg12)
 	if not GF_WhoTable[GF_RealmName][arg2] and GF_PlayingOnTurtle and GF_SavedVariables.usewhoongroups and GF_SavedVariables.usefriendslist then GF_GetWhoData(arg2,arg12) end
 	GF_WhisperReceivedAddToWhisperHistoryList(arg1,arg2,event)
-	table.insert(DEFAULT_CHAT_FRAME.editBox.lastTell,1,arg2)
+	ChatEdit_SetLastTellTarget(arg2)
 	GF_PreviousMessage[arg2] = {true}
 end
 function GF_YELL(event,arg1,arg2,arg8,arg9,arg12)
