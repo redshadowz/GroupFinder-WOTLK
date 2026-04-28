@@ -5771,7 +5771,7 @@ function GF_GetPlayerInfoByGUID(guid)
 	if success and class and name and name ~= "" then
 		if realm ~= "" then name = name..'-'..realm end
 		GF_WhoTable[GF_RealmName][name] = { 0,class,"",time() }
-		if factionRaces[UnitFactionGroup("player")][race] then GF_AddNameToWhoQueue(name,true) end
+		if GF_SavedVariables.showformattedchat and factionRaces[UnitFactionGroup("player")][race] then GF_AddNameToWhoQueue(name,true) end
 		return true
 	end
 end
