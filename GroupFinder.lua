@@ -72,7 +72,7 @@ local GF_PreviousMessage					= {}
 local GF_ProcessedFirstMessage				= {}
 local GF_PlayerSystemMessage				= {}
 local GF_MiniMapMessages					= {0,0,0,0,0,0,{}}
-local GF_LogMessageCodes = { GF_LOGGED_GROUPS,GF_LOGGED_NEW,GF_LOGGED_FILTERED,GF_LOGGED_ME,GF_LOGGED_CHAT,GF_LOGGED_LOOT,GF_LOGGED_SPAM,GF_LOGGED_GUILD,GF_LOGGED_TRADES,GF_LOGGED_BLACKLIST,GF_LOGGED_BELOWLEVEL }
+local GF_LogMessageCodes = { GF_LOGGED_GROUPS,GF_LOGGED_OLD,GF_LOGGED_FILTERED,GF_LOGGED_ME,GF_LOGGED_CHAT,GF_LOGGED_LOOT,GF_LOGGED_SPAM,GF_LOGGED_GUILD,GF_LOGGED_TRADES,GF_LOGGED_BLACKLIST,GF_LOGGED_BELOWLEVEL }
 local info 									= {}
 GF_PlayerNotes								= {}
 local GF_PlaySoundNextUpdate				= nil
@@ -1477,9 +1477,8 @@ end
 function GF_ChatCheckFilters(logType,arg1,arg2,event)
 	if logType == 7 or logType == 10 or logType == 11 then
 		return
-	elseif (logType == 1 or logType == 2) then 
-		if GF_SavedVariables.showgroupsinminimap then GF_ShowGroupsOnMinimap(arg1,arg2) end
-		if GF_SavedVariables.showgroupsinchat or (logType == 2 and GF_SavedVariables.showgroupsnewonly) then return true end
+	elseif logType == 1 or logType == 2 then
+		if GF_SavedVariables.showgroupsinchat or (logType == 2 and not GF_SavedVariables.showgroupsnewonly) then return true end
 	elseif (logType == 5 and GF_SavedVariables.showchattexts) or (logType == 9 and GF_SavedVariables.showtradestexts) or (logType == 8 and GF_SavedVariables.showguilds) then
 		return true
 	end
@@ -2063,10 +2062,10 @@ function GF_ParseIncomingAddonMessages(msg)
 			end
 			if #GF_MessageList[GF_RealmName] > 0 then
 				for i=1,#GF_MessageList[GF_RealmName] do
-					if tonumber(senttime) > GF_MessageList[GF_RealmName][i].t then table.insert(GF_MessageList[GF_RealmName], i, ({GF_GetGroupInformation(message,sentname,tonumber(senttime))})[1]) return end
+					if tonumber(senttime) > GF_MessageList[GF_RealmName][i].t then table.insert(GF_MessageList[GF_RealmName], i, ({GF_GetGroupInformation(message,sentname,tonumber(senttime))})[2]) return end
 				end
 			end
-			table.insert(GF_MessageList[GF_RealmName], ({GF_GetGroupInformation(message,sentname,tonumber(senttime))})[1])
+			table.insert(GF_MessageList[GF_RealmName], ({GF_GetGroupInformation(message,sentname,tonumber(senttime))})[2])
 			GF_AddonGroupDataToBeSentBuffer[sentname] = nil
 			GF_AddonAllNamesForResponseToLogin[sentname] = nil
 			GF_AddonNamesToBeSentAsARequest[sentname] = nil
@@ -2239,6 +2238,7 @@ function GF_Frame:PLAYER_ENTERING_WORLD() -- When logging in in a group, PLAYER_
 	GF_Frame:UnregisterEvent("ADDON_LOADED")
 	for i=1,NUM_CHAT_WINDOWS do getglobal("ChatFrame"..i):SetScript('OnEvent', ChatFrame_OnEvent) end
 	UIErrorsFrame:SetScript('OnEvent', function(self,event,...) if not GF_SavedVariables.systemfilter or not GF_Error_Messages[arg1] then old_UIErrorsFrame_OnEvent(self,event,...) end end)
+	if IsAddOnLoaded("LFG") and LFGMain and LFGRoleCheckRoleTank and LFGRoleCheckAcceptRole then LFGRoleCheck:SetScript("OnShow", GF_LFGRoleCheck_OnShow) LFGGroupReady:SetScript("OnShow", GF_LFGGroupReady_OnShow) findGroupButton:SetScript("OnClick", GF_findGroupButton_OnClick) findMoreButton:SetScript("OnClick", GF_findMoreButton_OnClick) leaveQueueButton:SetScript("OnClick", GF_leaveQueueButton_OnClick) end 
 end
 function GF_Frame:PLAYER_LEAVING_WORLD()
 	GF_PerCharVariables.searchtext = GF_GroupsFrameDescriptionEditBox:GetText()
@@ -2628,7 +2628,7 @@ function GF_ProcessChatMessages(event,arg1,arg2,arg8,arg9,arg12,delayed) -- Chat
 	--print(GetTime())
 	--if fixedType then logType = fixedType arg1 = ">>"..strsub(arg1,3) end
 	if logType > 7 and GF_PlayerMessages[arg2] and GF_PlayerMessages[arg2][1] and GF_PlayerMessages[arg2][1][1] then GF_PlayerMessages[arg2][1][1] = time() + 1 end -- To block multiple messages in series(Guild,Trade,Blacklist,Level)
-	GF_AddLogMessage(arg1,logType,true,arg2,arg8,arg9,event)
+	if not arg9 or not GF_CHANNEL_NO_LOG_LIST[strlower(arg9)] then GF_AddLogMessage(arg1,logType,true,arg2,arg8,arg9,event) end
 	if arg2 == UnitName("player") or arg2 == "SYSTEM" or event == "SAY" or (GF_SavedVariables.alwaysshowguild and (GF_Guildies[arg2] or GF_Friends[arg2] or GF_PlayersCurrentlyInGroup[arg2])) or GF_ChatCheckFilters(logType,arg1,arg2,event) then
 		if delayed then
 			if event == "CHANNEL" then GF_AddChannelMessage(arg1,arg2,arg8,arg9) else GF_AddChatMessage(arg1,arg2,event) end
@@ -2792,16 +2792,15 @@ function GF_FilterMessageType(arg1,arg2,arg9,arg12,event,showanyway)
 	return GF_CheckForGroups(arg1,arg2,arg12,event)
 end
 function GF_CheckForGroups(arg1,arg2,arg12,event)
-	local entry,foundInGroup = GF_GetGroupInformation(arg1,arg2,nil,event)
+	if event == "SAY" then GF_GetWhoData(arg2,arg12) return GF_CheckForSpam(arg1,arg2,foundInGroup) end
+	local foundInGroup,entry,add = GF_GetGroupInformation(arg1,arg2,nil,event)
 	GF_GetWhoData(arg2,arg12,foundInGroup)
 	if foundInGroup then
-		if event ~= "SAY" then table.insert(GF_MessageList[GF_RealmName],1,entry) end
-		if GF_UpdateAndRequestTimer > 5 then GF_UpdateAndRequestTimer = 4 end
-		if not GF_EntryMatchesGroupFilterCriteria(entry) then
-			foundInGroup = 3
-		elseif GF_PerCharVariables.playsounds then
-			GF_PlaySoundNextUpdate = true
+		if add then
+			table.insert(GF_MessageList[GF_RealmName],1,entry)
+			if GF_UpdateAndRequestTimer > 5 then GF_UpdateAndRequestTimer = 4 end
 		end
+		if not GF_EntryMatchesGroupFilterCriteria(entry) then foundInGroup = 3 elseif add then if GF_PerCharVariables.playsounds then GF_PlaySoundNextUpdate = true end if GF_SavedVariables.showgroupsinminimap then GF_ShowGroupsOnMinimap(arg1,arg2) end end
 	end
 	return GF_CheckForSpam(arg1,arg2,foundInGroup) or foundInGroup
 end
@@ -2817,7 +2816,7 @@ function GF_GetTypes(arg1,showanyway)
 
 	--wordString = string.sub(arg1,1,2) if wordString == "C " then fixedType = 5 arg1 = strsub(arg1,3) elseif wordString == "T " then fixedType = 9 arg1 = strsub(arg1,3) elseif wordString == "G " then fixedType = 8 arg1 = strsub(arg1,3) end
 	
-	arg1 = " "..gsub(gsub(strlower(gsub(gsub(gsub(arg1, "|+[%x%p]+(H%a+).-|h%[%[?%[?(.-)%]?%]?%]|+h|+r"," %1 >zqz[%2]"),"%.[gG][gG]/%S+", ""),"([a-z ][a-z])([A-Z])","%1 %2")),"[\"#\$\%&\*,\.@\\\^_`~|]"," "),"'","").." "
+	arg1 = " "..gsub(gsub(strlower(gsub(gsub(gsub(arg1, "|+[%x%p]+(H%a+).-|h%[%[?%[?(.-)%]?%]?%]|+h|+r"," %1 >zqz[%2]"),"%.[gG][gG]/%S+", ""),"([a-z ][a-z])([A-Z])","%1 %2")),"[\"#\$\%&\*,\.@\\\^_`~|]"," "),"['´]","").." "
 
 	if strfind(arg1, "%d+p[%p%s]") then foundLFM = 2 if showanyway == true then print("##p lfm 2") end end -- "10p heal" messages from chinese
 	lfs = 1 -- To detect space/lf##m/letter(eg "lf15mbwl" = lfm bwl)
@@ -3006,7 +3005,7 @@ function GF_GetTypes(arg1,showanyway)
 				end
 			elseif strbyte(arg1,lfs) == 60 and strbyte(arg1,lfe) == 62 then -- "<>"
 				tempString = ""
-				for word in gfind(wordString,"%a+") do if GF_WORD_FIX[word] then tempString = tempString..GF_WORD_FIX[word] else tempString = tempString..word end end
+				for word in gfind(wordString,"%a+") do if GF_WORD_FIX_SINGLE_WORD[word] then tempString = tempString..GF_WORD_FIX_SINGLE_WORD[word] elseif GF_WORD_FIX_BEFORE_QUEST[word] then tempString = tempString..GF_WORD_FIX_BEFORE_QUEST[word] elseif GF_WORD_FIX[word] then tempString = tempString..GF_WORD_FIX[word] else tempString = tempString..word end end
 				if strlen(tempString) < 25 then wordTableGuild["BRACKETS"] = tempString end
 				tempString = strsub(arg1,1,lfs)
 				_,_,wordString = strfind(tempString, "[%p%s](%a+)%s?<$") if wordString then if GF_WORD_FIX[wordString] then wordString = GF_WORD_FIX[wordString] end if GF_GUILD_BRACKET_PREFIX_SUFFIX[wordString] then foundGuild = foundGuild + GF_GUILD_BRACKET_PREFIX_SUFFIX[wordString] if showanyway == true then print(wordString.." guild "..GF_GUILD_BRACKET_PREFIX_SUFFIX[wordString]) end end end
@@ -3394,18 +3393,18 @@ function GF_GetTypes(arg1,showanyway)
 					if wordString == "G" then
 						if foundGuild < 100 then foundGuild = foundGuild + GF_WORD_GUILD[wordString] if showanyway == true then print(wordString.." guild "..GF_WORD_GUILD[wordString]) end end
 						if wordTableGuild[i+j+1] ~= "G" then
-							if GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]]) end end
-							if GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]]) end end
-							if wordTable[i+j+2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]]) end end
-							if wordTable[i+j+2] and GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]]) end end
+							if GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] then foundGuild = foundGuild + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]]) end end
+							if GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] then foundGuild = foundGuild + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]] if showanyway == true then print(wordTable[i+j+1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]]) end end
+							if wordTable[i+j+2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuild = foundGuild + GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i+j+1]..wordTable[i+j+2]]) end end
+							if wordTable[i+j+2] and GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] then foundGuild = foundGuild + GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]] if showanyway == true then print(wordTable[i+j+1]..wordTable[i+j+2].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i+j+1]..wordTable[i+j+2]]) end end
 						end
 						if wordTableGuild[i-1] ~= "G" then
-							if GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]]) end end
-							if wordTable[i-2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]]) end end
-							if wordTable[i-3] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
-							if GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-1]]) end end
-							if wordTable[i-2] and GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]]) end end
-							if wordTable[i-3] and GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuildExclusion = foundGuildExclusion + GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
+							if GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] then foundGuild = foundGuild + GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-1]]) end end
+							if wordTable[i-2] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] then foundGuild = foundGuild + GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-2]..wordTable[i-1]]) end end
+							if wordTable[i-3] and GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuild = foundGuild + GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_PREFIX_SUFFIX[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
+							if GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] then foundGuild = foundGuild + GF_GUILD_WORD_EXCLUSION[wordTable[i-1]] if showanyway == true then print(wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-1]]) end end
+							if wordTable[i-2] and GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] then foundGuild = foundGuild + GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-2]..wordTable[i-1]]) end end
+							if wordTable[i-3] and GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] then foundGuild = foundGuild + GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]] if showanyway == true then print(wordTable[i-3]..wordTable[i-2]..wordTable[i-1].." guildprefix "..GF_GUILD_WORD_EXCLUSION[wordTable[i-3]..wordTable[i-2]..wordTable[i-1]]) end end
 						end
 					else
 						foundGuild = foundGuild + GF_WORD_GUILD[wordString]
@@ -3528,7 +3527,8 @@ function GF_GetTypes(arg1,showanyway)
 		if lfe == 1 then break end
 	end
 	if foundLFM > foundLFG then foundLFG = 0 end
-	if #lfmlfgName == 1 and groupName[1] and not foundDungeon and not foundRaid and (not foundQuest[1] or GF_LFM_BYPASS[groupName[1]]) and (not foundPvP or foundPvP == 0) then lfs = 0 lfe = 0 for i=1,#groupName do if strfind(lfmlfgName[1],groupName[i]) then lfs = lfs + 1 end if GF_LFM_BYPASS[groupName[i]] or GF_WORD_CLASSES[groupName[i]] then lfe = lfe + 1 end end if lfs == #groupName then foundLFM = 0 foundLFG = 0 if showanyway == true then print("groupname is in lfmname") end elseif tempVal > 4 and lfe == #groupName and foundLFM < 2.5 and foundLFG < 2.5 then foundLFM = 0 foundLFG = 0 if showanyway == true then print("GF_LFM_BYPASS didn't reach 2.5") end end end
+-- 
+	if #lfmlfgName == 1 and groupName[1] and not foundDungeon and not foundRaid and (not foundQuest[1] or (foundQuest[1] == 0 and GF_LFM_BYPASS[groupName[1]])) and (not foundPvP or foundPvP == 0) then lfs = 0 lfe = 0 for i=1,#groupName do if strfind(lfmlfgName[1],groupName[i]) then lfs = lfs + 1 end if GF_LFM_BYPASS[groupName[i]] or GF_WORD_CLASSES[groupName[i]] then lfe = lfe + 1 end end if lfs == #groupName then foundLFM = 0 foundLFG = 0 if showanyway == true then print("groupname is in lfmname") end elseif tempVal > 4 and lfe == #groupName and foundLFM < 2.5 and foundLFG < 2.5 then foundLFM = 0 foundLFG = 0 if showanyway == true then print("GF_LFM_BYPASS didn't reach 2.5") end end end
 	
 	if foundGuild < 100 and strfind(arg1, "[<~][a-zA-Z0-9%&%-/ ]+[>~]") then foundGuild = foundGuild + 2 foundTradesExclusion = foundTradesExclusion + 1 if showanyway == true then print("<words> guild 2 .. tradesex 1") end end
 	while foundGuild > 100 do foundGuild = foundGuild - 100 end
@@ -3645,22 +3645,35 @@ function GF_GetGroupInformation(arg1,arg2,sentTime,event) -- Searches messages f
 	if sentTime then entry.t = sentTime else entry.t = time() end
 	if foundLFG > 0 then entry.lfg = true end
 	if not foundNotHC then entry.hc = foundHC end
-	
-	for i=1,#GF_MessageList[GF_RealmName] do
-		if GF_MessageList[GF_RealmName][i].op == arg2 then
-			if GF_SavedVariables.showgroupsnewonly then
-				if GF_MessageList[GF_RealmName][i].t + GF_SavedVariables.showgroupsnewonlytime*60 > time() then
-					entry.t = GF_MessageList[GF_RealmName][i].t
-				else
-					if event ~= "SAY" then table.remove(GF_MessageList[GF_RealmName], i) end
-					return entry, 2
-				end
+
+	if GF_LFG_BLOCK_TRIGGER[strmatch(arg1,"^(.-):")] then
+		return
+	elseif GF_LFG_TIMEOUT_TRIGGER[strsub(arg1,1,4)] then
+-- Check to see if same text, if text has changed, don't block
+		for i=1,#GF_MessageList[GF_RealmName] do
+			if GF_MessageList[GF_RealmName][i].op == arg2 then
+				if GF_MessageList[GF_RealmName][i].t + 600 > time() then return 2,entry end
+				table.remove(GF_MessageList[GF_RealmName], i)
+				entry.message = gsub(GF_GetRolesFromLFGText(arg1),":"," ")
+				return 1,entry,true
 			end
-			if event ~= "SAY" then table.remove(GF_MessageList[GF_RealmName], i) end
-			break
 		end
+		entry.message = gsub(GF_GetRolesFromLFGText(arg1),":"," ")
+		return 1,entry,true
+	else
+		for i=1,#GF_MessageList[GF_RealmName] do
+			if GF_MessageList[GF_RealmName][i].op == arg2 then
+				if GF_SavedVariables.showgroupsnewonly and GF_MessageList[GF_RealmName][i].t + GF_SavedVariables.showgroupsnewonlytime*60 > time() then return 2,entry end
+				table.remove(GF_MessageList[GF_RealmName], i)
+				break
+			end
+		end
+		return 1,entry,true
 	end
-	return entry, 1
+end
+function GF_GetRolesFromLFGText(arg1)
+	local m,t,h,d = strmatch(arg1,"(.-):(%d+):(%d+):(%d+)")
+	if m and t and h and d then return m.." have "..(tonumber(t) and tonumber(t) > 0 and (t.."tank ") or "")..(tonumber(h) and tonumber(h) > 0 and (h.."heal ") or "")..(tonumber(d) and tonumber(d) > 0 and (d.."dps ") or "") else return arg1 end
 end
 function GF_SearchMessageForTextString(msg,textstring,entry)
 	for w in gfind(textstring, "([%w%s]+),") do
@@ -4204,7 +4217,7 @@ function GF_CreateDropDownMenu()
 		info.hasArrow = false
 		info.disabled = nil
 		info.text = PARTY_INVITE
-		info.func = function() InviteByName(GF_DropDownMenu.name) end
+		info.func = function() InviteUnit(GF_DropDownMenu.name) end
 		info.value = nil
 		UIDropDownMenu_AddButton(info, 1)	
 
@@ -4364,7 +4377,7 @@ function GF_GetGroupWhoButton(frame,id)
 end
 function GF_LFGInviteButton(frame,id)
 	SendChatMessage(GF_INVITING_FOR..GF_FilteredResultsList[GF_ResultsListOffset+id].message,"WHISPER",nil,GF_FilteredResultsList[GF_ResultsListOffset+id].op)
-	InviteByName(GF_FilteredResultsList[GF_ResultsListOffset+id].op)
+	InviteUnit(GF_FilteredResultsList[GF_ResultsListOffset+id].op)
 	GF_LFGInviteTime[GF_FilteredResultsList[GF_ResultsListOffset+id].op] = time() + 10
 	getglobal(frame:GetName().."LFGInviteButton"):Hide()
 end
@@ -4940,7 +4953,7 @@ function GF_CreateGetWhoDropDownMenu()
 	info.hasArrow = false
 	info.disabled = nil
 	info.text = PARTY_INVITE
-	info.func = function() InviteByName(GF_GetWhoDropDownMenu.name) end
+	info.func = function() InviteUnit(GF_GetWhoDropDownMenu.name) end
 	info.value = nil
 	UIDropDownMenu_AddButton(info, 1)	
 
@@ -5336,7 +5349,7 @@ function GF_LFGCommonCleanup(entryName)
 end
 
 function GF_ClickQueueLFT() -- TODO: Does this work properly when in a group as leader?
-	if LFTFrameMainButtonText then 
+	if LFTFrameMainButtonText then
 		if LFTFrameMainButtonText:GetText() == LFT_GENERAL_LEAVE_QUEUE_TEXT then
 			LFTFrameMainButton:Click()
 		else
@@ -5357,11 +5370,30 @@ function GF_ClickQueueLFT() -- TODO: Does this work properly when in a group as 
 			end
 			LFTFrameMainButton:Click()
 		end
+	elseif LFGMain and leaveQueueButton and findGroupButton and findMoreButton then
+		if leaveQueueButton:IsVisible() and leaveQueueButton:IsEnabled() == 1 then
+			leaveQueueButton:Click()
+		else
+			if RoleDamage and GF_PerCharVariables.lfgdps then if not RoleDamage:GetChecked() then RoleDamage:Click() end else if RoleDamage:GetChecked() then RoleDamage:Click() end end
+			if RoleHealer and GF_PerCharVariables.lfgheal then if not RoleHealer:GetChecked() then RoleHealer:Click() end else if RoleHealer:GetChecked() then RoleHealer:Click() end end
+			if RoleTank and GF_PerCharVariables.lfgtank then if not RoleTank:GetChecked() then RoleTank:Click() end else if RoleTank:GetChecked() then RoleTank:Click() end end
+
+			for name,code in pairs(GF_LFT_DUNGEONS) do
+				if getglobal("Dungeon_"..code.."Text") and getglobal("Dungeon_"..code.."Text"):IsShown() then
+					if LFTGroups[GF_LFT_DUNGEONS[strsub(getglobal("Dungeon_"..code.."Text"):GetText(),11)]] then
+						if not getglobal("Dungeon_"..code.."_CheckButton"):GetChecked() then getglobal("Dungeon_"..code.."_CheckButton"):Click() end
+					else
+						if getglobal("Dungeon_"..code.."_CheckButton"):GetChecked() then getglobal("Dungeon_"..code.."_CheckButton"):Click() end
+					end
+				end
+			end
+			if findGroupButton:IsVisible() then findGroupButton:Click() else findMoreButton:Click() end
+		end
 	end
 end
 function GF_UpdateQueueLFTButton() -- Updates(gets dungeon list) on login and when leveling up... Otherwise, just check if groups match GF_PerCharVariables.searchlfgtext and show/hide the Queue Button... Always show button if in queue
+	if GF_MainFrameShowBoth and not GF_SavedVariables.mainframelogisopen then GF_QueuetoLFTButton:Hide() return end
 	if LFTFrameMainButtonText and LFTFrameTab2 then
-		if GF_MainFrameShowBoth and not GF_SavedVariables.mainframelogisopen then GF_QueuetoLFTButton:Hide() return end
 		if LFTFrameMainButtonText:GetText() == LFT_GENERAL_LEAVE_QUEUE_TEXT then
 			GF_QueuetoLFTButton:SetText(GF_LEAVE_QUEUE)
 			GF_QueuetoLFTButton:Show()
@@ -5398,6 +5430,46 @@ function GF_UpdateQueueLFTButton() -- Updates(gets dungeon list) on login and wh
 						end
 					else
 						break
+					end
+				end
+				if wordString ~= "" then
+					GF_QueuetoLFTButton:Show()
+					wordString = strsub(wordString,1,-3)..GF_LFT_AS
+					if GF_PerCharVariables.lfgtank then wordString = wordString..GF_TANK..", " end
+					if GF_PerCharVariables.lfgheal then wordString = wordString..GF_HEALER..", " end
+					if GF_PerCharVariables.lfgdps then wordString = wordString..GF_DPS..", " end
+					GF_GenTooltips["GF_QueuetoLFTButton"].tooltip2 = strsub(wordString,1,-3)
+				end
+			end
+		end
+	elseif LFGMain and leaveQueueButton and findGroupButton and findMoreButton then
+		if leaveQueueButton:IsVisible() and leaveQueueButton:IsEnabled() == 1 then
+			GF_QueuetoLFTButton:SetText(GF_LEAVE_QUEUE)
+			GF_QueuetoLFTButton:Show()
+			GF_GenTooltips["GF_QueuetoLFTButton"].tooltip1 = GF_QUEUED_FOR
+			local wordString = ""
+			for name,code in pairs(GF_LFT_DUNGEONS) do
+				if getglobal("Dungeon_"..code.."_Button") and getglobal("Dungeon_"..code.."_Button"):IsShown() and getglobal("Dungeon_"..code.."_CheckButton"):GetChecked() then
+					wordString = wordString..name..", "
+				end
+			end
+			if wordString ~= "" then
+				wordString = strsub(wordString,1,-3)..GF_LFT_AS
+				if RoleTank and RoleTank:GetChecked() then wordString = wordString..GF_TANK..", " end
+				if RoleHealer and RoleHealer:GetChecked() then wordString = wordString..GF_HEALER..", " end
+				if RoleDamage and RoleDamage:GetChecked() then wordString = wordString..GF_DPS..", " end
+				GF_GenTooltips["GF_QueuetoLFTButton"].tooltip2 = strsub(wordString,1,-3)
+			end
+		else
+			GF_QueuetoLFTButton:Hide()
+			if GF_PerCharVariables.lfgdps or GF_PerCharVariables.lfgheal or GF_PerCharVariables.lfgtank then
+				GF_GetDungeonsFromText(GF_PerCharVariables.searchlfgtext)
+				GF_QueuetoLFTButton:SetText(GF_QUEUE_IN_LFT)
+				GF_GenTooltips["GF_QueuetoLFTButton"].tooltip1 = GF_QUEUE_FOR
+				local wordString = ""
+				for name,code in pairs(GF_LFT_DUNGEONS) do
+					if getglobal("Dungeon_"..code.."_Button") and getglobal("Dungeon_"..code.."_Button"):IsShown() and LFTGroups[GF_LFT_DUNGEONS[name]] then
+						wordString = wordString..name..", "
 					end
 				end
 				if wordString ~= "" then
@@ -5756,6 +5828,30 @@ function GF_GetDungeonsFromText(arg1)
 		for name,_ in pairs(LFTGroups) do GF_PerCharVariables.searchbuttonstext[GF_GROUP_IDS[name]] = true end
 		GF_ApplyFiltersToGroupList(true)
 	end
+end
+function GF_LFGRoleCheck_OnShow()
+	if GF_PerCharVariables.lfgtank or GF_PerCharVariables.lfgheal or GF_PerCharVariables.lfgdps then
+		if GF_PerCharVariables.lfgdps then if not roleCheckDamage:GetChecked() then roleCheckDamage:Click() end else if roleCheckDamage:GetChecked() then roleCheckDamage:Click() end end
+		if GF_PerCharVariables.lfgheal then if not roleCheckHealer:GetChecked() then roleCheckHealer:Click() end else if roleCheckHealer:GetChecked() then roleCheckHealer:Click() end end
+		if GF_PerCharVariables.lfgtank then if not roleCheckTank:GetChecked() then roleCheckTank:Click() end else if roleCheckTank:GetChecked() then roleCheckTank:Click() end end
+		LFGRoleCheckAcceptRole:Click()
+		DEFAULT_CHAT_FRAME:AddMessage("GF: "..GF_AUTO_QUEUE_IN_LFT,1,1,0.5)
+	end
+end
+function GF_LFGGroupReady_OnShow()
+	if GF_SavedVariables.mainframestatus == 0 and GF_MainFrame:IsVisible() then GF_ToggleMainFrame() end
+end
+function GF_findGroupButton_OnClick()
+	findGroup()
+	GF_UpdateQueueLFTButton()
+end
+function GF_findMoreButton_OnClick()
+	findMore()
+	GF_UpdateQueueLFTButton()
+end
+function GF_leaveQueueButton_OnClick()
+	leaveQueue()
+	GF_UpdateQueueLFTButton()
 end
 
 function GF_GetPlayerInfoByGUID(guid)
