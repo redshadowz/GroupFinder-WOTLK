@@ -1543,6 +1543,7 @@ function GF_CleanUpMessagesOfBadLinks(arg1) -- Replaces CLINK messages with norm
 end
 function GF_ShowGroupsOnMinimap(arg1,arg2,delayed)
 	if GF_SavedVariables.friendsToRemove[arg2] and not delayed then table.insert(GF_LogHistory[GF_RealmName]["Delay"], {"Minimap",time()+20,arg1,arg2}) return end
+	arg1 = GF_GetRolesFromLFGText(arg1)
 	for name,mmtable in pairs(GF_MiniMapMessages[7]) do if mmtable[1] <= GetTime() then GF_MiniMapMessages[7][name] = nil end end
 	if GF_MiniMapMessages[1] > GetTime() and GF_MiniMapMessages[2] > GetTime() and GF_MiniMapMessages[3] > GetTime() and GF_MiniMapMessages[4] > GetTime() and GF_MiniMapMessages[5] > GetTime() and GF_MiniMapMessages[6] > GetTime() then
 		local lowest = { GetTime()+20, 0 }
@@ -3536,6 +3537,7 @@ function GF_GetTypes(arg1,showanyway)
 
 	if possibleGold then foundTrades = foundTrades + 2 if showanyway == true then print("#g trade 2") end end
 	if tempVal >= 10 then foundTradesExclusion = foundTradesExclusion + floor(1.5 ^ (tempVal/10)) * .25 if showanyway == true then print((floor(1.5 ^ (tempVal/10)) * .25).." tradesex for "..tempVal.." words") end if numGroupWords > 0 and tempVal/(numGroupWords*1.5) > 1 then foundIgnore = foundIgnore + floor(tempVal/(numGroupWords*1.5)) * .25 if showanyway == true then print("subtract "..(floor(tempVal/(numGroupWords*1.5)) * .25).." for "..numGroupWords.." group words out of "..tempVal) end end end
+	if not firstLFMLFG and foundClass and tempVal <= 6 then foundTradesExclusion = foundTradesExclusion + 1 end
 	foundTrades = foundTrades - foundTradesExclusion
 
 	if foundIgnore > 0 then
@@ -3649,16 +3651,15 @@ function GF_GetGroupInformation(arg1,arg2,sentTime,event) -- Searches messages f
 	if GF_LFG_BLOCK_TRIGGER[strmatch(arg1,"^(.-):")] then
 		return
 	elseif GF_LFG_TIMEOUT_TRIGGER[strsub(arg1,1,4)] then
--- Check to see if same text, if text has changed, don't block
 		for i=1,#GF_MessageList[GF_RealmName] do
 			if GF_MessageList[GF_RealmName][i].op == arg2 then
 				if GF_MessageList[GF_RealmName][i].t + 600 > time() then return 2,entry end
 				table.remove(GF_MessageList[GF_RealmName], i)
-				entry.message = gsub(GF_GetRolesFromLFGText(arg1),":"," ")
+				entry.message = GF_GetRolesFromLFGText(arg1)
 				return 1,entry,true
 			end
 		end
-		entry.message = gsub(GF_GetRolesFromLFGText(arg1),":"," ")
+		entry.message = GF_GetRolesFromLFGText(arg1)
 		return 1,entry,true
 	else
 		for i=1,#GF_MessageList[GF_RealmName] do
@@ -3673,7 +3674,7 @@ function GF_GetGroupInformation(arg1,arg2,sentTime,event) -- Searches messages f
 end
 function GF_GetRolesFromLFGText(arg1)
 	local m,t,h,d = strmatch(arg1,"(.-):(%d+):(%d+):(%d+)")
-	if m and t and h and d then return m.." have "..(tonumber(t) and tonumber(t) > 0 and (t.."tank ") or "")..(tonumber(h) and tonumber(h) > 0 and (h.."heal ") or "")..(tonumber(d) and tonumber(d) > 0 and (d.."dps ") or "") else return arg1 end
+	if m and t and h and d then return gsub(m.." have "..(tonumber(t) and tonumber(t) > 0 and (t.."tank ") or "")..(tonumber(h) and tonumber(h) > 0 and (h.."heal ") or "")..(tonumber(d) and tonumber(d) > 0 and (d.."dps ") or ""),":"," ") else return gsub(arg1,":"," ") end
 end
 function GF_SearchMessageForTextString(msg,textstring,entry)
 	for w in gfind(textstring, "([%w%s]+),") do
