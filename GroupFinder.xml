@@ -1394,7 +1394,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 							</OnLeave>
 						</Scripts>
 					</Frame>
-					<Button name="GF_LFGHardCoreDropdown" inherits="GF_ButtonTemplate" hidden="true">
+					<Button name="GF_LFGHardCoreDropdown" inherits="GF_ButtonTemplate">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="GF_GroupFilterDropdownButton" relativePoint="BOTTOM">
 								<Offset>
@@ -5497,6 +5497,23 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
+							<CheckButton name="GF_IntegrateWithLFGLFTCheckButton" inherits="GF_CheckButtonTemplate_Label">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="GF_UseClickCombosCheckButton" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-5"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										if self:GetChecked() then GF_SavedVariables.lfglftintegration = true GF_UpdateQueueLFTButton() else GF_SavedVariables.lfglftintegration = false GF_QueuetoLFTButton:Hide() end
+									</OnClick>
+									<OnLoad>
+										getglobal(self:GetName().."TextLabel"):SetText(GF_LFGLFT_INTEGRATION)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
 							<Button name="GF_ResetAllSettingsButton" inherits="GF_ButtonTemplate" text="GF_RESET_SETTINGS">
 								<Size>
 									<AbsDimension x="160" y="25"/>
@@ -5960,7 +5977,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				GF_LogChannelName:Hide()
 				GF_GroupFilterDropdownMenu:Hide()
 				GF_ChatFilterDropdownMenu:Hide()
-				GF_LFGHardCoreDropdown:Hide()
+				GF_LFGHardCore:Hide()
 				GF_GroupChannelName:Hide()
 				GF_FontName:Hide()
 				GF_BlockList:Hide()
