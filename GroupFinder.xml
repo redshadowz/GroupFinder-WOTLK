@@ -1217,7 +1217,8 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								if self:GetChecked() then GF_SavedVariables.showlfm = true else GF_SavedVariables.showlfm = false end
+								if self:GetChecked() then GF_PerCharVariables.showlfm = true else GF_PerCharVariables.showlfm = false end
+								GF_GetGroupFilters()
 								GF_ApplyFiltersToGroupList(true)
 							</OnClick>
 							<OnLoad>
@@ -1235,7 +1236,8 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								if self:GetChecked() then GF_SavedVariables.showlfg = true else GF_SavedVariables.showlfg = false end
+								if self:GetChecked() then GF_PerCharVariables.showlfg = true else GF_PerCharVariables.showlfg = false end
+								GF_GetGroupFilters()
 								GF_ApplyFiltersToGroupList(true)
 							</OnClick>
 							<OnLoad>
@@ -1275,7 +1277,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 					</Button>
 					<Frame name="GF_GroupFilterDropdownMenu" clampedToScreen="true" enableMouse="true" toplevel="true" parent="UIParent" frameStrata="DIALOG" hidden="true">
 						<Size>
-							<AbsDimension y="88"/>
+							<AbsDimension y="137"/>
 						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="GF_GroupFilterDropdownButton" relativePoint="BOTTOMLEFT">
@@ -1322,7 +1324,8 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										if self:GetChecked() then GF_SavedVariables.showdungeons = true else GF_SavedVariables.showdungeons = false end
+										if self:GetChecked() then GF_PerCharVariables.showdungeons = true else GF_PerCharVariables.showdungeons = false end
+										GF_GetGroupFilters()
 										GF_ApplyFiltersToGroupList(true)
 									</OnClick>
 									<OnLoad>
@@ -1340,7 +1343,8 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										if self:GetChecked() then GF_SavedVariables.showraids = true else GF_SavedVariables.showraids = false end
+										if self:GetChecked() then GF_PerCharVariables.showraids = true else GF_PerCharVariables.showraids = false end
+										GF_GetGroupFilters()
 										GF_ApplyFiltersToGroupList(true)
 									</OnClick>
 									<OnLoad>
@@ -1358,7 +1362,8 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										if self:GetChecked() then GF_SavedVariables.showquests = true else GF_SavedVariables.showquests = false end
+										if self:GetChecked() then GF_PerCharVariables.showquests = true else GF_PerCharVariables.showquests = false end
+										GF_GetGroupFilters()
 										GF_ApplyFiltersToGroupList(true)
 									</OnClick>
 									<OnLoad>
@@ -1376,11 +1381,69 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 								</Anchors>
 								<Scripts>
 									<OnClick>
-										if self:GetChecked() then GF_SavedVariables.showother = true else GF_SavedVariables.showother = false end
+										if self:GetChecked() then GF_PerCharVariables.showother = true else GF_PerCharVariables.showother = false end
+										GF_GetGroupFilters()
 										GF_ApplyFiltersToGroupList(true)
 									</OnClick>
 									<OnLoad>
 										getglobal(self:GetName().."TextLabel"):SetText(GF_SHOW_OTHER)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton name="GF_GroupFilterShowTanksCheckButton" inherits="GF_DropdownCheckButtonTemplate_Label">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="GF_GroupFilterShowOtherCheckButton" relativePoint="BOTTOM">
+										<Offset>
+											<AbsDimension x="0" y="6"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										if self:GetChecked() then GF_PerCharVariables.showtank = true else GF_PerCharVariables.showtank = false end
+										GF_GetGroupFilters()
+										GF_ApplyFiltersToGroupList(true)
+									</OnClick>
+									<OnLoad>
+										getglobal(self:GetName().."TextLabel"):SetText(GF_SHOW_TANKS)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton name="GF_GroupFilterShowHealersCheckButton" inherits="GF_DropdownCheckButtonTemplate_Label">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="GF_GroupFilterShowTanksCheckButton" relativePoint="BOTTOM">
+										<Offset>
+											<AbsDimension x="0" y="6"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										if self:GetChecked() then GF_PerCharVariables.showhealer = true else GF_PerCharVariables.showhealer = false end
+										GF_GetGroupFilters()
+										GF_ApplyFiltersToGroupList(true)
+									</OnClick>
+									<OnLoad>
+										getglobal(self:GetName().."TextLabel"):SetText(GF_SHOW_HEALERS)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+							<CheckButton name="GF_GroupFilterShowDPSCheckButton" inherits="GF_DropdownCheckButtonTemplate_Label">
+								<Anchors>
+									<Anchor point="TOP" relativeTo="GF_GroupFilterShowHealersCheckButton" relativePoint="BOTTOM">
+										<Offset>
+											<AbsDimension x="0" y="6"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>
+										if self:GetChecked() then GF_PerCharVariables.showdps = true else GF_PerCharVariables.showdps = false end
+										GF_GetGroupFilters()
+										GF_ApplyFiltersToGroupList(true)
+									</OnClick>
+									<OnLoad>
+										getglobal(self:GetName().."TextLabel"):SetText(GF_SHOW_DPS)
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -5508,6 +5571,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 								<Scripts>
 									<OnClick>
 										if self:GetChecked() then GF_SavedVariables.lfglftintegration = true GF_UpdateQueueLFTButton() else GF_SavedVariables.lfglftintegration = false GF_QueuetoLFTButton:Hide() end
+										GF_GetGroupFilters()
 									</OnClick>
 									<OnLoad>
 										getglobal(self:GetName().."TextLabel"):SetText(GF_LFGLFT_INTEGRATION)
