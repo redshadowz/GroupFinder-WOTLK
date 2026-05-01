@@ -67,8 +67,8 @@ GF_EDIT_NOTE = "Edit Note"
 GF_PLAYER_NOTE = "Player Note: "
 GF_GROUP_NOTE = "Groups Seen: "
 GF_TRADES = "Trades"
-GF_LOOTS = "Loots"
-GF_GUILDS = "Guilds"
+GF_LOOTS = "Loot"
+GF_GUILDS = "Guild"
 GF_PLAY_SOUND = "Play sound" -- Label for GF_PlaySoundOnResultsCheckButton
 GF_CHAT_ON = "Chat on"
 GF_CHAT_OFF = "Chat off"
@@ -187,7 +187,7 @@ GF_SQUARE_MINIMAP = "Square Minimap"
 GF_AUTO = "Auto"
 GF_LFM_LFG = "LFM/LFG"
 GF_DUNGEON = "Dungeon"
-GF_RAID = "Raid"
+GF_RAIDS = "Raid"
 GF_ROLE = "Role"
 GF_TANK = "Tank"
 GF_HEALER = "Healer"
@@ -1469,7 +1469,7 @@ GF_WORD_FIX_BEFORE_QUEST = { -- Word changes processed before quests.
 ["shtorm"] = "storm",["andorhall"] = "andorhal",["suneyglade"] = "sunnyglade",["sunneyglade"] = "sunnyglade",["stvarena"] = "gurubashiarena",["ringofstv"] = "gurubashiarena",
 ["sorrorws"] = "sorrows",
 ["kalindor"] = "kalimdor",["gadgedzan"] = "gadgetzan",["gadgetzn"] = "gadgetzan",["gadgetgan"] = "gadgetzan",["wsgg"] = "wsg",["darnassuss"] = "darnassus",["orgrimmarr"] = "orgrimmar",["orgrimmare"] = "orgrimmar",["stormwinds"] = "stormwind",
-["sili"] = "silithus",["sith"] = "silithus",["silithusthus"] = "silithus",
+["sili"] = "silithus",["silli"] = "silithus",["sith"] = "silithus",["silithusthus"] = "silithus",
 
 -- Groups
 ["lfgm"] = "lfm",["lmfg"] = "lfm",["lfmm"] = "lfm",["glfm"] = "lfm",["ldm"] = "lfm",["flm"] = "lfm",["lmf"] = "lfm",["ldg"] = "lfm",["lfp"] = "lfm",["lvm"] = "lfm",["lfmg"] = "lfm",
@@ -1744,7 +1744,8 @@ GF_WORD_FIX_BEFORE_QUEST = { -- Word changes processed before quests.
 GF_WORD_FIX_BEFORE_QUEST_SECOND = {
 -- Groups
 ["lovepotion"] = {"azshara","quest"},["farmtimbermawrep"] = {"timbermaw","repfarm"},["anygr"] = {"any","group"},["giantsws"] = {"frostmaul","winterspring"},["needto"] = {"need","to"},
-["lokmodan"] = {"loch","modan"},["silithusraidgroup"] = {"silithus","repfarm"},["slidailies"] = {"silithus","dailies"},["slidaily"] = {"silithus","daily"},
+["lokmodan"] = {"loch","modan"},["silithusraidgroup"] = {"silithus","repfarm"},["sillydailies"] = {"silithus","dailies"},["sillydaily"] = {"silithus","daily"},
+["slidailies"] = {"silithus","dailies"},["slidaily"] = {"silithus","daily"},["sildailies"] = {"silithus","dailies"},["sildaily"] = {"silithus","daily"},
 
 ["needps"] = {"need","dps"},["whohave"] = {"anyone","have"},["tankkf"] = {"tank","lf"},["lfgtool"] = {"groupfinder","tool"},
 ["elitequeue"] = {"elite","quest"},["alahquest"] = {"alahthalas","quest"},["alahelite"] = {"alahthalas","elite"},["alahqueue"] = {"alahthalas","quest"},["helpmew"] = {"help","with"},
@@ -1969,6 +1970,8 @@ GF_WORD_SPECIAL_COMBINATION = { -- Letter/Number word fixes("g2g", "5th", "30min
 ["19er"] = "19 nineteen",["29er"] = "29 twentynine",["39er"] = "39 thirtynine",["49er"] = "49 fortynine",["59er"] = "59 fiftynine",
 ["19ers"] = "19 nineteen",["29ers"] = "29 twentynine",["39ers"] = "39 thirtynine",["49ers"] = "49 fortynine",["59ers"] = "59 fiftynine",
 ["2sr"] = "two softreserve",["2srs"] = "two softreserve",["2hr"] = "",
+
+["10bracket"] = "10 ten bracket",["20bracket"] = "20 twenty bracket",["30bracket"] = "30 thirty bracket",["40bracket"] = "50 forty bracket",["50bracket"] = "50 fifty bracket",["60bracket"] = "60 sixties bracket",
 
 ["10ish"] = "10 ten",["20ish"] = "20 twenty",["30ish"] = "30 thirty",["40ish"] = "40 forty",["50ish"] = "50 fifty",["60ish"] = "60 sixty",
 ["15ish"] = "15 ten",["25ish"] = "25 twenty",["35ish"] = "35 thirty",["45ish"] = "45 forty",["55ish"] = "55 fifty",["60ish"] = "60 sixty",
@@ -2450,7 +2453,7 @@ GF_WORD_IGNORE = { -- Phrases to help prevent group false-positives.
 ["questbugged"] = .25,["questbuggy"] = .25,["iknowthereis"] = .5,["knowthereishorde"] = .5,["thereishordeone"] = .5,["anyoneknowprice"] = .5,["knowpriceof"] = .5,["knowprice"] = .25,["joinmyguild"] = .25,["illteachyou"] = .25,["howtobe"] = .25,
 
 ["lolhr"] = .5,["islikewtf"] = .5,["anyonecompletethisquest"] = .25,["peopledonot"] = .25,["peopledonotlike"] = .25,["donotlike"] = .25,["beforethreat"] = .25,["fulldick"] = .25,["whatdoyouneed"] = .25,["applylfgaddon"] = .5,["spamminginchat"] = .5,
-["comekillme"] = .25,["killmeonce"] = .25,["cantevenkill"] = .5,
+["comekillme"] = .25,["killmeonce"] = .25,["cantevenkill"] = .5,["isawhim"] = .25,["yeahforsure"] = .25,["isawhimgank"] = .25,
 
 --[[
 [""] = .5,
@@ -2910,9 +2913,9 @@ GF_WORD_LFM = {
 ["fiftiesat"] = 1.25,["fiftiesin"] = 1.25,["fiftiesnear"] = 1.25,["fiftiesto"] = 1.25,
 ["sixtiesat"] = 1.25,["sixtiesin"] = 1.25,["sixtiesnear"] = 1.25,["sixtiesto"] = 1.25,
 
--- Level
-["tennineteenjoin"] = 1.25,["twentytwentyninejoin"] = 1.25,["thirtythirtyninejoin"] = 1.25,["fortyfortyninejoin"] = 1.25,["fiftyfiftyninejoin"] = 1.25,["sixtiesjoin"] = 1.25,
-["tennineteenqueue"] = 1.25,["twentytwentyninequeue"] = 1.25,["thirtythirtyninequeue"] = 1.25,["fortyfortyninequeue"] = 1.25,["sixtiesqueue"] = 1.25,
+["sixtiesat"] = 1.25,["sixtiesin"] = 1.25,["sixtiesnear"] = 1.25,["sixtiesto"] = 1.25,
+["tennineteen"] = .75,["twentytwentynine"] = .75,["thirtythirtynine"] = .75,["fortyfortynine"] = .75,["fiftyfiftynine"] = .75,["sixties"] = .75,
+["tenbracket"] = .75,["twentybracket"] = .75,["thirtybracket"] = .75,["fortybracket"] = .75,["fiftybracket"] = .75,["sixtiesbracket"] = .75,
 
 -- Needto
 ["needtorun"] = 1.5,["needtospeedrun"] = 1.5,["needtohelp"] = 1.25,["needtogo"] = 1.25,["needtocome"] = 1.25,["needtogroup"] = 1.5,["needtoraid"] = 1.5,["needtokill"] = 1.25,["needtodo"] = 1.25,["needtostart"] = 1.25,
@@ -2925,7 +2928,7 @@ GF_WORD_LFM = {
 ["comeclear"] = 1.25,["beforereset"] = 1.25,["srmsos"] = 1.5,["softreservemsos"] = 1.5,["msos"] = 1.5,["hrtwosoftreserve"] = 1.5,["twosoftreserve"] = 1.25,["cumulativesr"] = 1.25,
 ["signup"] = 1.5,["signin"] = .5,["signfor"] = .5,["whisperforsignup"] = 3,["whisperfordiscordsignup"] = 3,["invitetodiscordsignup"] = 3,["weeklygroup"] = 1.25,["readytogrind"] = 1.5,["signinforraid"] = 1.5,
 ["requiredgearcheck"] = 1.5,["requiresgearcheck"] = 1.5,["summonready"] = 1.5,["wforinvite"] = 1.5,["whisperforinvite"] = 1.5,["invitegroup"] = 1.5,["inviteforgroup"] = 1.5,["invitetogroup"] = 1.5,
-["whoisdown"] = 1.25,["whodownfor"] = 1.25,["continuingfrom"] = 1.25,["wearecontinuing"] = 1.5,["groupdelvinginto"] = 1.5,["stillongoing"] = 1.5,["haveongoing"] = 1.25,
+["whoisdown"] = 1.25,["whodownfor"] = 1.25,["continuingfrom"] = 1.25,["wearecontinuing"] = 1.5,["groupdelvinginto"] = 1.5,["stillongoing"] = 1.5,["haveongoing"] = 1.25,["finalblowagainst"] = 1.25,
 
 ["clothuserfor"] = 1.25,["leatheruserfor"] = 1.25,["mailuserfor"] = 1.25,["plateuserfor"] = 1.25,
 ["clothwearerfor"] = 1.25,["leatherwearerfor"] = 1.25,["mailwearerfor"] = 1.25,["platewearerfor"] = 1.25,
@@ -3218,6 +3221,7 @@ GF_LFM_BYPASS = { -- Won't detect LFM/LFM Before/After if these words
 ["open"] = true,
 ["weekly"] = true,
 ["weeklies"] = true,
+["bracket"] = true,
 }
 GF_LFM_TRIGGER = {
 ["anyone"] = true,["anyonein"] = true,["anyonenear"] = true,["needto"] = true,["boost"] = true,["carry"] = true,["powerlevel"] = true,["backupat"] = true,["levelin"] = true,["around"] = true,["morein"] = true,["helpin"] = true,["levelingin"] = true,
@@ -3233,6 +3237,7 @@ GF_LFM_TRIGGER = {
 ["fortiesat"] = true,["fortiesin"] = true,["fortiesnear"] = true,["fortiesto"] = true,
 ["fiftiesat"] = true,["fiftiesin"] = true,["fiftiesnear"] = true,["fiftiesto"] = true,
 ["sixtiesat"] = true,["sixtiesin"] = true,["sixtiesnear"] = true,["sixtiesto"] = true,
+["tennineteen"] = true,["twentytwentynine"] = true,["thirtythirtynine"] = true,["fortyfortynine"] = true,["fiftyfiftynine"] = true,["sixties"] = true,
 }
 GF_LFM_CONNECT_WORDS_BEFORE = { -- Connecting words before Groupname(needhealer(for)dm)
 -- Classes/Roles
@@ -3258,7 +3263,7 @@ GF_LFM_CONNECT_WORDS_BEFORE = { -- Connecting words before Groupname(needhealer(
 ["this"] = 0,["and"] = 0,["or"] = 0,["also"] = .25,["else"] = .25,["have"] = 0,["random"] = 0,["with"] = .25,["get"] = .25,["very"] = 0,["welcome"] = .25,["other"] = 0,["to"] = .25,["still"] = 0,["fuck"] = 0,["bad"] = 0,["badly"] = 0,["possible"] = 0,
 
 -- Misc other
-["daily"] = .5,["weekly"] = .5,["signin"] = .5,["signup"] = .5,["freeroll"] = .5,["bracket"] = .5,["premade"] = .5,["tonight"] = 0,["today"] = 0,["time"] = 0,["press"] = 0,["all"] = 0,["pop"] = .25,
+["daily"] = .5,["weekly"] = .5,["signin"] = .5,["signup"] = .5,["freeroll"] = .5,["bracket"] = .5,["premade"] = .5,["tonight"] = 0,["today"] = 0,["time"] = 0,["press"] = 0,["all"] = 0,["both"] = 0,["pop"] = .25,
 ["horde"] = .5,["alliance"] = .5,["hc"] = .5,["hardcore"] = .5,["reg"] = .5,["normal"] = .5,["hordeexclamation"] = .5,
 ["quest"] = .5,["hquest"] = .5,["elite"] = .5,["hr"] = .5,["sr"] = .5,["softreserve"] = 1,["os"] = .5,["boss"] = .5,
 ["cloth"] = .25,["leather"] = .25,["mail"] = .25,["plate"] = .25,
@@ -3303,7 +3308,7 @@ GF_LFM_CONNECT_WORDS_AFTER = { -- Connecting words after Groupname(dm(need)heale
 ["this"] = 0,["and"] = 0,["or"] = 0,["also"] = .25,["else"] = .25,["have"] = 0,["random"] = 0,["with"] = .25,["get"] = .25,["very"] = 0,["welcome"] = .25,["other"] = 0,["to"] = 0,["still"] = 0,["fuck"] = 0,["bad"] = 0,["badly"] = 0,["possible"] = 0,
 
 -- Misc other
-["daily"] = .5,["weekly"] = .5,["signin"] = .5,["signup"] = .5,["freeroll"] = .5,["bracket"] = .5,["premade"] = .5,["tonight"] = 0,["today"] = 0,["time"] = 0,["press"] = 0,["all"] = 0,["pop"] = .25,
+["daily"] = .5,["weekly"] = .5,["signin"] = .5,["signup"] = .5,["freeroll"] = .5,["bracket"] = .5,["premade"] = .5,["tonight"] = 0,["today"] = 0,["time"] = 0,["press"] = 0,["all"] = 0,["both"] = 0,["pop"] = .25,
 ["horde"] = .5,["alliance"] = .5,["hc"] = .5,["hardcore"] = .5,["reg"] = .5,["normal"] = .5,["hordeexclamation"] = .5,
 ["quest"] = .5,["hquest"] = .5,["elite"] = .5,["hr"] = .5,["sr"] = .5,["softreserve"] = 1,["os"] = .5,["boss"] = .5,
 ["cloth"] = .25,["leather"] = .25,["mail"] = .25,["plate"] = .25,
@@ -3644,7 +3649,7 @@ GF_WORD_PVP = {
 ["tenbg"] = 10,["nineteenbg"] = 19,["twentybg"] = 29,["twentyninebg"] = 29,["thirtybg"] = 30,["thirtyninebg"] = 39,["fortybg"] = 40,["fortyninebg"] = 49,["fiftybg"] = 50,["fiftyninebg"] = 59,["sixtybg"] = 60,
 ["twentiesbg"] = 29,["thirtiesbg"] = 39,["fortiesbg"] = 49,["fiftiesbg"] = 59,["sixtiesbg"] = 60,
 
-["randombg"] = 0,["rbg"] = 0,["gurubashiarena"] = 0,
+["randombg"] = 0,["rbg"] = 0,["gurubashiarena"] = 0,["bracket"] = 0,
 
 -- Turtle
 ["bloodring"] = 60,["sunnygladevalley"] = 60,["sunnyglade"] = 60,["thorngorge"] = 0,["tg"] = 0,
@@ -3944,7 +3949,7 @@ GF_TRADE_WORD_EXCLUSION = {
 ["taurenwarlock"] = 1,["taurenwarrior"] = 1,["tellmehow"] = 1,["thatstuff"] = 1,["thenwheni"] = 1,["thereareno"] = 1,["they"] = .25,["theycangiveme"] = 1,["throttlesme"] = 1,
 ["tojoin"] = 1,["tosay"] = 1,["treasurehunter"] = 1,["trollhunter"] = 1,["trollmage"] = 1,["trollpriest"] = 1,["trollrogue"] = 1,["trollshaman"] = 1,["trollwarlock"] = 1,
 ["trollwarrior"] = 1,["turnback"] = 1,["typethat"] = 1,["undeadhunter"] = 1,["undeadmage"] = 1,["undeadpaladin"] = 1,["undeadpriest"] = 1,["undeadrogue"] = 1,["undeadwarlock"] = 1,
-["undeadwarrior"] = 1,["understandabout"] = 1,["understandthat"] = 1,["usd"] = .5,["utc"] = 1,["warlocklf"] = 1,["warriorlf"] = 1,["weekly"] = 1,["weknow"] = 1,
+["undeadwarrior"] = 1,["understandabout"] = 1,["understandthat"] = 1,["usd"] = .5,["utc"] = 1,["warlocklf"] = 1,["warriorlf"] = 1,["weekly"] = 1,["weknow"] = 1,["wecanalso"] = .5,
 ["wentout"] = 1,["whatdoyou"] = 1,["whatdoyouthink"] = 1,["whatisbest"] = 1,["whatisbetter"] = 1,["wheneveritype"] = 1,["wheretolearn"] = .5,["whichisbest"] = 1,["whichisbetter"] = 1,
 ["whitelevel"] = 1,["whycanti"] = 1,["whyicant"] = 1,["whythereis"] = 1,["wife"] = 1,["willneed"] = 1,["withoutbreaks"] = 1,["withprice"] = .5,["woah"] = 1,["racial"] = .5,["racialthatletsyou"] = 1,
 ["worldchat"] = 1,["worldchat"] = 2,["wouldthat"] = 1,["wtbbf"] = .5,["wtbboyfriend"] = .5,["wtbdankmemes"] = .5,["wtbgf"] = .5,["wtbgirlfriend"] = .5,["wtbmyass"] = .5,["whatifi"] = .25,["madedonation"] = .25,
@@ -4042,7 +4047,7 @@ GF_GROUP_IDS = {
 ["defenseofstormwind"] = "PVP",["defenseofironforge"] = "PVP",["defenseofdarnassus"] = "PVP",["defenseofundercity"] = "PVP",["defenseoforgrimmar"] = "PVP",["defenseofthunderbluff"] = "PVP",["levelgank"] = "PVP",["ganklevel"] = "PVP",
 ["stormwindraid"] = "PVP",["ironforgeraid"] = "PVP",["darnassusraid"] = "PVP",["undercityraid"] = "PVP",["orgrimmarraid"] = "PVP",["thunderbluffraid"] = "PVP",
 ["raidstormwind"] = "PVP",["raidironforge"] = "PVP",["raiddarnassus"] = "PVP",["raidundercity"] = "PVP",["raidorgrimmar"] = "PVP",["raidthunderbluff"] = "PVP",
-["attackstormwind"] = "PVP",["attackironforge"] = "PVP",["attackdarnassus"] = "PVP",["attackundercity"] = "PVP",["attackorgrimmar"] = "PVP",["attackthunderbluff"] = "PVP",
+["attackstormwind"] = "PVP",["attackironforge"] = "PVP",["attackdarnassus"] = "PVP",["attackundercity"] = "PVP",["attackorgrimmar"] = "PVP",["attackthunderbluff"] = "PVP",["bracket"] = "PVP",
 ["queuetennineteen"] = "PVP",["queuetwentytwentynine"] = "PVP",["queuethirtythirtynine"] = "PVP",["queuefortyfortynine"] = "PVP",["queuefiftyfiftynine"] = "PVP",["randombg"] = "PVP",["rbg"] = "PVP",
 ["brackettennineteen"] = "PVP",["brackettwentytwentynine"] = "PVP",["bracketthirtythirtynine"] = "PVP",["bracketfortyfortynine"] = "PVP",["bracketfiftyfiftynine"] = "PVP",
 ["tennineteenbracket"] = "PVP",["twentytwentyninebracket"] = "PVP",["thirtythirtyninebracket"] = "PVP",["fortyfortyninebracket"] = "PVP",["fiftyfiftyninebracket"] = "PVP",

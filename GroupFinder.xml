@@ -2,8 +2,14 @@
 C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 	<Script file="localization.lua"/>
 	<Script file="GroupFinder.lua"/>
-	<FontString name="GF_NormalFont" inherits="GameFontNormal" virtual="true"><Shadow><Offset><AbsDimension x="1" y="-1"/></Offset><Color r="0" g="0" b="0" a="0.5"/></Shadow></FontString>
-	<FontString name="GF_TitleFont" inherits="GF_NormalFont" virtual="true"><Color r="0.9" g="0.9" b="0.9"/></FontString>
+	<Font name="GF_BaseFont" inherits="GameFontNormal" virtual="true"><Shadow><Offset><AbsDimension x="1" y="-1"/></Offset><Color r="0" g="0" b="0" a="0.5"/></Shadow></Font>
+	<Font name="GF_MinimapFont" inherits="GameFontNormal" virtual="true"><Shadow><Offset><AbsDimension x="1" y="-1"/></Offset><Color r="0" g="0" b="0" a="0.5"/></Shadow></Font>
+	<Font name="GF_ButtonFont" inherits="GameFontNormal" virtual="true"><Shadow><Offset><AbsDimension x="1" y="-1"/></Offset><Color r="0" g="0" b="0" a="0.5"/></Shadow></Font>
+	<Font name="GF_ButtonFontWhite" inherits="GameFontNormal" virtual="true"><Color r="0.9" g="0.9" b="0.9"/><Shadow><Offset><AbsDimension x="1" y="-1"/></Offset><Color r="0" g="0" b="0" a="0.5"/></Shadow></Font>
+	<Font name="GF_LargeFontWhite" inherits="GameFontNormal" virtual="true"><Color r="0.9" g="0.9" b="0.9"/><Shadow><Offset><AbsDimension x="1" y="-1"/></Offset><Color r="0" g="0" b="0" a="0.5"/></Shadow></Font>
+
+	<FontString name="GF_NormalFont" inherits="GF_BaseFont" virtual="true"></FontString>
+	<FontString name="GF_TitleFont" inherits="GF_LargeFontWhite" virtual="true"></FontString>
 	<Button name="GF_GrayButton_Whisper" inherits="UIPanelButtonGrayTemplate" hidden="true" virtual="true">
 		<Size>
 			<AbsDimension x="100" y="20"/>
@@ -50,6 +56,9 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				if arg1 == "RightButton" and self:GetID() > 1 then GF_ToggleWhisperDropDownMenu(self,self:GetID(),arg1) end
 			</OnMouseDown>
 		</Scripts>
+		<NormalFont style="GF_ButtonFontWhite"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFontWhite"/>
 	</Button>
 	<CheckButton name="GF_SmallCheckButton_Whisper" inherits="UICheckButtonTemplate" hidden="true" virtual="true">
 		<Size>
@@ -114,7 +123,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 		<Size x="24" y="24"/>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString inherits="GF_TitleFont" name="$parentTextLabel" justifyH="LEFT">
+				<FontString inherits="GF_NormalFont" name="$parentTextLabel" justifyH="LEFT">
 					<Anchors>
 						<Anchor point="LEFT">
 							<Offset>
@@ -133,6 +142,9 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
+		<NormalFont style="GF_ButtonFont"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFont"/>
 	</Button>
 	<Button name="GF_CharacterFrameTabButtonTemplate" inherits="WorldStateScoreFrameTabButtonTemplate" virtual="true">
 		<Scripts>
@@ -140,6 +152,9 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				self:SetFrameLevel(GF_MainFrame:GetFrameLevel() + 1)
 			</OnLoad>
 		</Scripts>
+		<NormalFont style="GF_ButtonFont"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFont"/>
 	</Button>
 	<CheckButton name="GF_CheckButtonTemplate_Label" inherits="UICheckButtonTemplate" virtual="true">
 		<Size>
@@ -839,6 +854,9 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				</Anchor>
 			</Anchors>
 		</HighlightTexture>
+		<NormalFont style="GF_ButtonFont"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFont"/>
 	</Button>
 	<Button name="GF_GroupHistoryPlayerButtonTemplate" enableMouse="true" toplevel="true" hidden="true" virtual="true">
 		<Size>
@@ -868,6 +886,9 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
+		<NormalFont style="GF_ButtonFont"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFont"/>
 	</Button>
 	<Button name="GF_GroupHistoryItemButtonTemplate" enableMouse="true" toplevel="true" hidden="true" virtual="true">
 		<Size>
@@ -897,6 +918,9 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
+		<NormalFont style="GF_ButtonFont"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFont"/>
 	</Button>
 	<Button name="GF_MessageAnchorButton" inherits="UIRadioButtonTemplate" parent="UIParent" enableMouse="true" movable="true" frameStrata="MEDIUM" toplevel="true" clampedToScreen="true" hidden="true">
 		<Size>
@@ -916,12 +940,15 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
+		<NormalFont style="GF_ButtonFont"/>
+		<HighlightFont style="GF_ButtonFontWhite"/>
+		<DisabledFont style="GF_ButtonFont"/>
 	</Button>
 	<MessageFrame name="GF_MinimapMessageFrameTemplateA" frameStrata="BACKGROUND" toplevel="true" displayDuration="20.0" maxLines="1" virtual="true">
 		<Size>
 			<AbsDimension x="256" y="16"/>
 		</Size>
-		<FontString inherits="GameFontNormal" justifyH="RIGHT" nonspacewrap="false">
+		<FontString inherits="GF_MinimapFont" justifyH="RIGHT" nonspacewrap="false">
 			<Color r="1" g="1" b="1" a="1"/>
 		</FontString>
 	</MessageFrame>
@@ -929,7 +956,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 		<Size>
 			<AbsDimension x="256" y="16"/>
 		</Size>
-		<FontString inherits="GameFontNormal" justifyH="RIGHT" nonspacewrap="false" maxLines="2">
+		<FontString inherits="GF_MinimapFont" justifyH="RIGHT" nonspacewrap="false" maxLines="2">
 			<Color r="1" g="1" b="1" a="1"/>
 		</FontString>
 	</MessageFrame>
@@ -2827,7 +2854,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 												end
 											</OnLeave>
 											<OnLoad>
-												getglobal(self:GetName().."TextLabel"):SetText(GF_RAID)
+												getglobal(self:GetName().."TextLabel"):SetText(GF_RAIDS)
 											</OnLoad>
 										</Scripts>
 										<NormalTexture file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up" setAllPoints="true"/>
@@ -3573,7 +3600,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 										GameTooltip:Hide()
 									</OnMouseWheel>
 								</Scripts>
-								<FontString justifyH="LEFT" inherits="GameFontNormal"/>
+								<FontString justifyH="LEFT" inherits="GF_BaseFont"/>
 							</ScrollingMessageFrame>
 							<Button name="GF_LogFilterDropdownButton" inherits="GF_ButtonTemplate">
 								<Anchors>
@@ -5572,6 +5599,7 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 									<OnClick>
 										if self:GetChecked() then GF_SavedVariables.lfglftintegration = true GF_UpdateQueueLFTButton() else GF_SavedVariables.lfglftintegration = false GF_QueuetoLFTButton:Hide() end
 										GF_GetGroupFilters()
+										GF_ApplyFiltersToGroupList(true)
 									</OnClick>
 									<OnLoad>
 										getglobal(self:GetName().."TextLabel"):SetText(GF_LFGLFT_INTEGRATION)
