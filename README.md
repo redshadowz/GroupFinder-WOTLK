@@ -24,4 +24,4 @@ Note: The addon will not message the same person more than once every 15 minutes
 [Enable Auto Blacklist] - Automatically blacklists players who 'spam' if they are below the level threshold.  
 [Font] - Switch between fonts(also imports pfUI fonts).  
 
-<img width="833" height="653" alt="image" src="https://github.com/user-attachments/assets/6878826f-263a-4d80-8e8a-32bda9eb11cc" />  
+<img width="812" height="635" alt="image" src="https://github.com/user-attachments/assets/cc0081ce-7c07-4498-b5a5-ca931e7d0f1b" />  
