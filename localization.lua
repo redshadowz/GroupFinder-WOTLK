@@ -1091,7 +1091,7 @@ GF_WORD_FIX_SINGLE_WORD = { -- Single word changes. Mostly typos and simple word
 ["wep"] = "weapon",["weap"] = "weapon",["weapn"] = "weapon",["wpn"] = "weapon",["waepen"] = "weapon",["helmt"] = "head",["hlmet"] = "head",["buckel"] = "buckle",["bucle"] = "buckle",["nec"] = "neck",["leggs"] = "legs",["ches"] = "chest",["chst"] = "chest",
 ["fres"] = "fr",["frres"] = "fr",["nres"] = "nr",["sres"] = "sr",["ares"] = "ar",["transmut"] = "transmute",["trasmute"] = "transmute",["trasmutes"] = "transmute",["tmute"] = "transmute",["tmutes"] = "transmute",
 ["summ"] = "summon",["summen"] = "summon",["sumoning"] = "summon",["summs"] = "summon",["summpn"] = "summon",["summin"] = "summon",["summv"] = "summon",["sumun"] = "summon",["sumon"] = "summon",["summe"] = "summon",["sumoon"] = "summon",["summns"] = "summon",
-["sumomn"] = "summon",["sommon"] = "summon",["sumn"] = "summon",["sdummon"] = "summon",["summsn"] = "summon",["symmons"] = "summon",["symmon"] = "summon",["summom"] = "summon",
+["sumomn"] = "summon",["sommon"] = "summon",["sumn"] = "summon",["sdummon"] = "summon",["summsn"] = "summon",["symmons"] = "summon",["symmon"] = "summon",["summom"] = "summon",["sumonim"] = "summon",
 ["tp"] = "portal",["tps"] = "portal",["tele"] = "portal",["prtal"] = "portal",["portl"] = "portal",["protal"] = "portal",["porrt"] = "portal",["potal"] = "portal",["portahl"] = "portal",["portol"] = "portal",["partal"] = "portal",
 ["pikcing"] = "pick",["boxesd"] = "lockbox",["boxxed"] = "lockbox",["boxe"] = "lockbox",["boxxes"] = "lockbox",["boxs"] = "lockbox",["lp"] = "lockbox",
 ["resits"] = "resist",["resi"] = "resist",["ressist"] = "resist",["ressistance"] = "resistance",
@@ -2884,7 +2884,7 @@ GF_WORD_LFM = {
 
 ["jointen"] = 1,["joinnineteen"] = 1,["jointwenty"] = 1,["jointwentynine"] = 1,["jointhirty"] = 1,["jointhirtynine"] = 1,["joinforty"] = 1,["joinfortynine"] = 1,["joinfifty"] = 1,["joinfiftynine"] = 1,["joinsixty"] = 1,["joinsixties"] = 1,
 ["tenjoin"] = 1,["nineteenjoin"] = 1,["twentyjoin"] = 1,["twentyninejoin"] = 1,["thirtyjoin"] = 1,["thirtyninejoin"] = 1,["fortyjoin"] = 1,["fortyninejoin"] = 1,["fiftyjoin"] = 1,["fiftyninejoin"] = 1,["sixtyjoin"] = 1,["sixtiesjoin"] = 1,
-["joinifneed"] = 1.5,["joinifyouneed"] = 1.5,["waitingforyou"] = 1,["getmein"] = 1,["chillanddo"] = .75,
+["joinifneed"] = 1.5,["joinifyouneed"] = 1.5,["waitingforyou"] = 1,["getmein"] = 1,["chillanddo"] = .75,["whoneedto"] = 1.25,
 
 ["allianceisneeded"] = 1.5,["hordeisneeded"] = 1.5,["alliancejoin"] = 1.5,["hordejoin"] = 1.5,["alliancetojoin"] = 1.5,["hordetojoin"] = 1.5,["alliancefor"] = 1.25,["hordefor"] = 1.25,
 ["queuenow"] = 1.5,["queueagain"] = 1.5,["queuefuck"] = 1.5,["queuemore"] = 1.5,["queueitup"] = 1.5,["joinqueue"] = 1.5,["queuedaily"] = 1.5,["queuesome"] = 1.5,["qingup"] = 1.5,["qingupto"] = 1.5,["qingupfor"] = 1.5,
@@ -3251,7 +3251,7 @@ GF_LFM_CONNECT_WORDS_BEFORE = { -- Connecting words before Groupname(needhealer(
 ["heal"] = .25,["damage"] = .25,["stealth"] = .25,
 
 -- Group-related
-["join"] = .5,["come"] = .5,["last"] = .5,["invite"] = .5,["help"] = .5,["please"] = .5,["quick"] = .5,["fill"] = .5,["full"] = .5,["complete"] = .5,["ready"] = .5,["speed"] = .25,["only"] = .5,["spam"] = .5,["gtg"] = .5,["whisper"] = 0,
+["join"] = .5,["come"] = .5,["last"] = .5,["invite"] = .5,["help"] = .5,["please"] = .5,["quick"] = .5,["fill"] = .5,["full"] = .5,["complete"] = .5,["ready"] = .5,["speed"] = .25,["only"] = .5,["spam"] = .5,["gtg"] = .5,["whisper"] = 0,["summon"] = .25,
 ["any"] = .25,["anyone"] = .25,["members"] = .5,["people"] = .5,["player"] = .5,["guy"] = .5,["mate"] = .5,["buddy"] = .5,["person"] = .5,["chad"] = 0,["friend"] = .25,["who"] = .25,["enjoyer"] = .25,["buster"] = .25,["role"] = .5,["anything"] = .5,
 ["lf"] = 0,["lfg"] = 0,["lfm"] = 0,["wb"] = 0,["seeking"] = .5,["seek"] = .5,["search"] = .5,["looking"] = .5,["need"] = .5,["ask"] = .5,["lets"] = .5,["letsdo"] = 1,["go"] = .5,["willing"] = .5,["doing"] = .5,["todo"] = .5,
 ["raid"] = .5,["group"] = .5,["dungeon"] = .5,["instance"] = .5,["boss"] = .5,["level"] = .5,["fresh"] = .5,["kill"] = .5,["killing"] = .5,["queue"] = .5,["qing"] = .5,["speedrun"] = .5,["run"] = .5,["farm"] = .5,["clear"] = .5,["clearing"] = .5,
@@ -3276,7 +3276,7 @@ GF_LFM_CONNECT_WORDS_BEFORE = { -- Connecting words before Groupname(needhealer(
 ["tier"] = 0,["tierone"] = 0,["tiertwo"] = 0,["tierthree"] = 0,
 ["yelo"] = .5,["yelos"] = .5,["yala"] = .5,["yalla"] = .5,["yolo"] = .5,["dualspec"] = .25,
 
-["b"] = 0,["c"] = 0,["d"] = 0,["e"] = 0,["f"] = 0,["g"] = 0,["h"] = 0,["i"] = 0,["j"] = 0,["k"] = 0,["l"] = 0,["m"] = 0,["n"] = 0,["o"] = 0,["p"] = 0,["q"] = 0,["r"] = 0,["s"] = 0,["t"] = 0,["u"] = 0,["v"] = 0,["w"] = 0,["y"] = 0,["z"] = 0,
+["b"] = 0,["c"] = 0,["d"] = 0,["e"] = 0,["f"] = 0,["g"] = 0,["h"] = 0,["i"] = 0,["j"] = 0,["k"] = 0,["l"] = 0,["m"] = 0,["n"] = 0,["o"] = 0,["p"] = 0,["q"] = 0,["r"] = 0,["s"] = 0,["t"] = 0,["u"] = 0,["v"] = 0,["w"] = 0,["y"] = 0,["z"] = 0,["da"] = 0,
 
 ["cleanse"] = 0,["res"] = 0,["resurrection"] = 0,["dispel"] = 0,["magic"] = 0,["decurse"] = 0,["curse"] = 0,["stun"] = 0,["taunt"] = 0,["buff"] = 0,["slow"] = 0,["big"] = 0,["small"] = 0,
 
@@ -3296,7 +3296,7 @@ GF_LFM_CONNECT_WORDS_AFTER = { -- Connecting words after Groupname(dm(need)heale
 ["heal"] = .25,["damage"] = .25,["stealth"] = .25,
 
 -- Group-related
-["join"] = .5,["come"] = .5,["last"] = .5,["invite"] = .5,["help"] = .5,["please"] = .5,["quick"] = .5,["fill"] = .5,["full"] = .5,["complete"] = .5,["ready"] = .5,["speed"] = .25,["only"] = .5,["spam"] = .5,["gtg"] = .5,["whisper"] = 0,
+["join"] = .5,["come"] = .5,["last"] = .5,["invite"] = .5,["help"] = .5,["please"] = .5,["quick"] = .5,["fill"] = .5,["full"] = .5,["complete"] = .5,["ready"] = .5,["speed"] = .25,["only"] = .5,["spam"] = .5,["gtg"] = .5,["whisper"] = 0,["summon"] = .25,
 ["any"] = .25,["anyone"] = .25,["members"] = .5,["people"] = .5,["player"] = .5,["guy"] = .5,["mate"] = .5,["buddy"] = .5,["person"] = .5,["chad"] = 0,["friend"] = .25,["who"] = .25,["enjoyer"] = .25,["buster"] = .25,["role"] = .5,["anything"] = .5,
 ["lf"] = 0,["lfg"] = 0,["lfm"] = 0,["wb"] = 0,["seeking"] = .5,["seek"] = .5,["search"] = .5,["looking"] = .5,["need"] = .5,["ask"] = .5,["lets"] = .5,["letsdo"] = 1,["go"] = .5,["willing"] = .5,["doing"] = .5,["todo"] = .5,
 ["raid"] = .5,["group"] = .5,["dungeon"] = .5,["instance"] = .5,["boss"] = .5,["level"] = .5,["fresh"] = .5,["kill"] = .5,["killing"] = .5,["queue"] = .5,["qing"] = .5,["speedrun"] = .5,["run"] = .5,["farm"] = .5,["clear"] = .5,["clearing"] = .5,
@@ -3321,7 +3321,7 @@ GF_LFM_CONNECT_WORDS_AFTER = { -- Connecting words after Groupname(dm(need)heale
 ["tier"] = 0,["tierone"] = 0,["tiertwo"] = 0,["tierthree"] = 0,
 ["yelo"] = .5,["yelos"] = .5,["yala"] = .5,["yalla"] = .5,["yolo"] = .5,["dualspec"] = .25,
 
-["b"] = 0,["c"] = 0,["d"] = 0,["e"] = 0,["f"] = 0,["g"] = 0,["h"] = 0,["i"] = 0,["j"] = 0,["k"] = 0,["l"] = 0,["m"] = 0,["n"] = 0,["o"] = 0,["p"] = 0,["q"] = 0,["r"] = 0,["s"] = 0,["t"] = 0,["u"] = 0,["v"] = 0,["w"] = 0,["y"] = 0,["z"] = 0,
+["b"] = 0,["c"] = 0,["d"] = 0,["e"] = 0,["f"] = 0,["g"] = 0,["h"] = 0,["i"] = 0,["j"] = 0,["k"] = 0,["l"] = 0,["m"] = 0,["n"] = 0,["o"] = 0,["p"] = 0,["q"] = 0,["r"] = 0,["s"] = 0,["t"] = 0,["u"] = 0,["v"] = 0,["w"] = 0,["y"] = 0,["z"] = 0,["da"] = 0,
 
 ["cleanse"] = 0,["res"] = 0,["resurrection"] = 0,["dispel"] = 0,["magic"] = 0,["decurse"] = 0,["curse"] = 0,["stun"] = 0,["taunt"] = 0,["buff"] = 0,["slow"] = 0,["big"] = 0,["small"] = 0,
 
