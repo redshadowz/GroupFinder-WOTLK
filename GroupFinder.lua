@@ -140,7 +140,7 @@ local gfind = string.gmatch or string.gfind
 
 local GF_Frame = CreateFrame'Frame'
 GF_Frame:Hide()
-GF_Frame:SetScript('OnEvent', function(self,event,...) self[event](self,event,...) end) -- Changed GF_Frame:SetScript('OnEvent', function() this[event](this) end). Changed "this" to "self".
+GF_Frame:SetScript('OnEvent', function(self,event,...) self[event](self,event,...) end)
 GF_Frame:RegisterEvent("ADDON_LOADED")
 GF_Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 GF_IconMovingFrame = CreateFrame'Frame'
@@ -657,20 +657,36 @@ function GF_FormatBlockListWords(arg1,display)
 			else
 				if GF_WORD_GROUP_BYPASS[wordString] then
 					if GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] then wordTable[#wordTable] = GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] end
+					wordString = GF_WORD_GROUP_BYPASS[wordString]
 					_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfe+1)
 					if tempString then
 						if GF_WORD_GROUP_BYPASS[tempString] then
-							table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+							tempString = GF_WORD_GROUP_BYPASS[tempString]
+							table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 							lfs = tempVal+1
-							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-							if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
+							while true do
+								_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+								if wordString then
+									if GF_WORD_GROUP_BYPASS[wordString] then
+										table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString])
+										lfs = tempVal+1
+									elseif GF_WORD_GROUP_BYPASS_SECOND[tempString..wordString] then
+										lfs = tempVal+1
+										_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+										if GF_WORD_GROUP_BYPASS[wordString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) lfs = tempVal+1 end
+									else
+										break
+									end
+								else
+									break
+								end
+							end
 						elseif GF_WORD_GROUP_BYPASS_SECOND[wordString..tempString] then
 							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",tempVal+1)
 							if GF_WORD_GROUP_BYPASS[tempString] then
-								table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+								tempString = GF_WORD_GROUP_BYPASS[tempString]
+								table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 								lfs = tempVal+1
-								_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-								if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
 							else
 								table.insert(wordTable, wordString)
 								lfs = lfe+1
@@ -3012,20 +3028,36 @@ function GF_GetTypes(arg1,showanyway)
 			else
 				if GF_WORD_GROUP_BYPASS[wordString] then
 					if GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] then wordTable[#wordTable] = GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] end
+					wordString = GF_WORD_GROUP_BYPASS[wordString]
 					_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfe+1)
 					if tempString then
 						if GF_WORD_GROUP_BYPASS[tempString] then
-							table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+							tempString = GF_WORD_GROUP_BYPASS[tempString]
+							table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 							lfs = tempVal+1
-							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-							if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
+							while true do
+								_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+								if wordString then
+									if GF_WORD_GROUP_BYPASS[wordString] then
+										table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString])
+										lfs = tempVal+1
+									elseif GF_WORD_GROUP_BYPASS_SECOND[tempString..wordString] then
+										lfs = tempVal+1
+										_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+										if GF_WORD_GROUP_BYPASS[wordString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) lfs = tempVal+1 end
+									else
+										break
+									end
+								else
+									break
+								end
+							end
 						elseif GF_WORD_GROUP_BYPASS_SECOND[wordString..tempString] then
 							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",tempVal+1)
 							if GF_WORD_GROUP_BYPASS[tempString] then
-								table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+								tempString = GF_WORD_GROUP_BYPASS[tempString]
+								table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 								lfs = tempVal+1
-								_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-								if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
 							else
 								table.insert(wordTable, wordString)
 								lfs = lfe+1
@@ -4082,8 +4114,8 @@ function GF_UpdateResults()
 						getglobal("GF_NewItem"..i.."GroupWhoButton"):Hide()
 					end
 					if GF_FilteredResultsList[i+GF_ResultsListOffset].dlevel and UnitLevel("player") >= GF_FilteredResultsList[i+GF_ResultsListOffset].dlevel - 4 and UnitLevel("player") <= GF_FilteredResultsList[i+GF_ResultsListOffset].dlevel + 4 then
-						if GF_NumPartyMembers == 1 and not GF_FilteredResultsList[i+GF_ResultsListOffset].lfg and (not GF_RequestInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] or GF_RequestInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] < time()) then getglobal("GF_NewItem"..i.."LFMWhisperRequestInviteButton"):Show() else getglobal("GF_NewItem"..i.."LFMWhisperRequestInviteButton"):Hide() end
-						if (GF_NumPartyMembers == 1 or UnitIsPartyLeader("player")) and GF_FilteredResultsList[i+GF_ResultsListOffset].lfg and (not GF_LFGInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] or GF_LFGInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] < time()) then getglobal("GF_NewItem"..i.."LFGInviteButton"):Show() else getglobal("GF_NewItem"..i.."LFGInviteButton"):Hide() end
+						if GF_NumPartyMembers == 1 and GF_FilteredResultsList[i+GF_ResultsListOffset].specFlags == 1 and (not GF_RequestInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] or GF_RequestInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] < time()) then getglobal("GF_NewItem"..i.."LFMWhisperRequestInviteButton"):Show() else getglobal("GF_NewItem"..i.."LFMWhisperRequestInviteButton"):Hide() end
+						if (GF_NumPartyMembers == 1 or UnitIsPartyLeader("player")) and GF_FilteredResultsList[i+GF_ResultsListOffset].specFlags == 2 and (not GF_LFGInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] or GF_LFGInviteTime[GF_FilteredResultsList[i+GF_ResultsListOffset].op] < time()) then getglobal("GF_NewItem"..i.."LFGInviteButton"):Show() else getglobal("GF_NewItem"..i.."LFGInviteButton"):Hide() end
 					else
 						getglobal("GF_NewItem"..i.."LFMWhisperRequestInviteButton"):Hide()
 						getglobal("GF_NewItem"..i.."LFGInviteButton"):Hide()
@@ -5668,20 +5700,36 @@ function GF_GetDungeonsFromText(arg1)
 			else
 				if GF_WORD_GROUP_BYPASS[wordString] then
 					if GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] then wordTable[#wordTable] = GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] end
+					wordString = GF_WORD_GROUP_BYPASS[wordString]
 					_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfe+1)
 					if tempString then
 						if GF_WORD_GROUP_BYPASS[tempString] then
-							table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+							tempString = GF_WORD_GROUP_BYPASS[tempString]
+							table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 							lfs = tempVal+1
-							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-							if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
+							while true do
+								_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+								if wordString then
+									if GF_WORD_GROUP_BYPASS[wordString] then
+										table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString])
+										lfs = tempVal+1
+									elseif GF_WORD_GROUP_BYPASS_SECOND[tempString..wordString] then
+										lfs = tempVal+1
+										_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+										if GF_WORD_GROUP_BYPASS[wordString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) lfs = tempVal+1 end
+									else
+										break
+									end
+								else
+									break
+								end
+							end
 						elseif GF_WORD_GROUP_BYPASS_SECOND[wordString..tempString] then
 							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",tempVal+1)
 							if GF_WORD_GROUP_BYPASS[tempString] then
-								table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+								tempString = GF_WORD_GROUP_BYPASS[tempString]
+								table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 								lfs = tempVal+1
-								_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-								if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
 							else
 								table.insert(wordTable, wordString)
 								lfs = lfe+1
@@ -6058,20 +6106,36 @@ function GetModifiedQuestName(entryname)
 			else
 				if GF_WORD_GROUP_BYPASS[wordString] then
 					if GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] then wordTable[#wordTable] = GF_WORD_GROUP_BYPASS[wordTable[#wordTable]] end
+					wordString = GF_WORD_GROUP_BYPASS[wordString]
 					_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfe+1)
 					if tempString then
 						if GF_WORD_GROUP_BYPASS[tempString] then
-							table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+							tempString = GF_WORD_GROUP_BYPASS[tempString]
+							table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 							lfs = tempVal+1
-							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-							if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
+							while true do
+								_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+								if wordString then
+									if GF_WORD_GROUP_BYPASS[wordString] then
+										table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString])
+										lfs = tempVal+1
+									elseif GF_WORD_GROUP_BYPASS_SECOND[tempString..wordString] then
+										lfs = tempVal+1
+										_,tempVal,wordString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
+										if GF_WORD_GROUP_BYPASS[wordString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) lfs = tempVal+1 end
+									else
+										break
+									end
+								else
+									break
+								end
+							end
 						elseif GF_WORD_GROUP_BYPASS_SECOND[wordString..tempString] then
 							_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",tempVal+1)
 							if GF_WORD_GROUP_BYPASS[tempString] then
-								table.insert(wordTable, GF_WORD_GROUP_BYPASS[wordString]) table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString])
+								tempString = GF_WORD_GROUP_BYPASS[tempString]
+								table.insert(wordTable, wordString) table.insert(wordTable, tempString)
 								lfs = tempVal+1
-								_,tempVal,tempString = strfind(arg1,"(.-)[%s%p%d]+",lfs)
-								if GF_WORD_GROUP_BYPASS[tempString] then table.insert(wordTable, GF_WORD_GROUP_BYPASS[tempString]) lfs = tempVal+1 end
 							else
 								table.insert(wordTable, wordString)
 								lfs = lfe+1
