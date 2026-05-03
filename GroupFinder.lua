@@ -36,7 +36,7 @@ GF_ResultsListOffset						= 0
 GF_ResultsListOffsetSize					= GF_ResultsBaseListOffsetSize
 GF_BlackListOffset							= 0
 GF_LogHistory								= {}
-GF_LogFilters								= { [4]=true,["LOOT"] = true,["MONEY"] = true,["COMBAT_FACTION_CHANGE"] = true,["COMBAT_XP_GAIN"] = true,["COMBAT_HONOR_GAIN"] = true, }
+GF_LogFilters								= {}
 GF_GroupFilters								= {}
 GF_SpecialFilters							= {}
 GF_ConvertMessagesToLinks					= nil
@@ -1444,9 +1444,14 @@ function GF_MakeBasicChatString(arg1,arg2,event)
 end
 function GF_GetJoinedChannels()
 	GF_ChatJoinedChannels = {}
-	local chanList = { GetChannelList() }
-	for i=2, #chanList, 2 do
-		GF_ChatJoinedChannels[strlower(chanList[i])] = i/2
+	local chanList = {GetChannelList()}
+	for _,name in pairs({GetChannelList()}) do
+		GF_ChatJoinedChannels[strlower(name)] = true
+	end
+	for i=1,NUM_CHAT_WINDOWS do
+		for _,name in pairs({GetChatWindowChannels(i)}) do
+			GF_ChatJoinedChannels[strlower(name)] = true
+		end
 	end
 end
 function GF_ChatCheckFilters(logType,arg1,arg2,event)
@@ -1604,23 +1609,24 @@ function GF_DisplayLogFirst()
 	GF_DisplayLog()
 end
 function GF_GetLogFilters()
-	if GF_SavedVariables.logshowgroup then GF_LogFilters[1] = true GF_LogFilters[2] = true else GF_LogFilters[1] = nil GF_LogFilters[2] = nil end
-	if GF_SavedVariables.logshowfiltered then GF_LogFilters[3] = true else GF_LogFilters[3] = nil end
-	if GF_SavedVariables.logshowchat then GF_LogFilters[5] = true else GF_LogFilters[5] = nil end
-	if GF_SavedVariables.logshowloot then GF_LogFilters[6] = true else GF_LogFilters[6] = nil end
-	if GF_SavedVariables.logshowspam then GF_LogFilters[7] = true else GF_LogFilters[7] = nil end
-	if GF_SavedVariables.logshowguilds then GF_LogFilters[8] = true else GF_LogFilters[8] = nil end
-	if GF_SavedVariables.logshowtrades then GF_LogFilters[9] = true else GF_LogFilters[9] = nil end
-	if GF_SavedVariables.logshowblacklist then GF_LogFilters[10] = true else GF_LogFilters[10] = nil end
-	if GF_SavedVariables.logshowbelowlevel then GF_LogFilters[11] = true else GF_LogFilters[11] = nil end
+	GF_LogFilters = { [4]=true,["LOOT"] = true,["MONEY"] = true,["COMBAT_FACTION_CHANGE"] = true,["COMBAT_XP_GAIN"] = true,["COMBAT_HONOR_GAIN"] = true, }
+	if GF_SavedVariables.logshowgroup then GF_LogFilters[1] = true GF_LogFilters[2] = true end
+	if GF_SavedVariables.logshowfiltered then GF_LogFilters[3] = true end
+	if GF_SavedVariables.logshowchat then GF_LogFilters[5] = true end
+	if GF_SavedVariables.logshowloot then GF_LogFilters[6] = true end
+	if GF_SavedVariables.logshowspam then GF_LogFilters[7] = true end
+	if GF_SavedVariables.logshowguilds then GF_LogFilters[8] = true end
+	if GF_SavedVariables.logshowtrades then GF_LogFilters[9] = true end
+	if GF_SavedVariables.logshowblacklist then GF_LogFilters[10] = true end
+	if GF_SavedVariables.logshowbelowlevel then GF_LogFilters[11] = true end
 
-	if GF_SavedVariables.logchannels then GF_LogFilters["CHANNEL"] = true else GF_LogFilters["CHANNEL"] = nil end
-	if GF_SavedVariables.logparty then GF_LogFilters["PARTY"] = true GF_LogFilters["RAID"] = true GF_LogFilters["RAID_LEADER"] = true GF_LogFilters["RAID_WARNING"] = true GF_LogFilters["BATTLEGROUND"] = true GF_LogFilters["BATTLEGROUND_LEADER"] = true else GF_LogFilters["PARTY"] = nil GF_LogFilters["RAID"] = nil GF_LogFilters["RAID_LEADER"] = nil GF_LogFilters["RAID_WARNING"] = nil GF_LogFilters["BATTLEGROUND"] = nil GF_LogFilters["BATTLEGROUND_LEADER"] = nil end
-	if GF_SavedVariables.logguild then GF_LogFilters["GUILD"] = true GF_LogFilters["OFFICER"] = true else GF_LogFilters["GUILD"] = nil GF_LogFilters["OFFICER"] = nil end
-	if GF_SavedVariables.logwhisper then GF_LogFilters["WHISPER"] = true GF_LogFilters["WHISPER_INFORM"] = true else GF_LogFilters["WHISPER"] = nil GF_LogFilters["WHISPER_INFORM"] = nil end
-	if GF_SavedVariables.logsay then GF_LogFilters["SAY"] = true else GF_LogFilters["SAY"] = nil end
-	if GF_SavedVariables.logyell then GF_LogFilters["YELL"] = true else GF_LogFilters["YELL"] = nil end
-	if GF_SavedVariables.loghardcore then GF_LogFilters["HARDCORE"] = true GF_LogFilters["SYSTEM"] = true else GF_LogFilters["HARDCORE"] = nil GF_LogFilters["SYSTEM"] = nil end
+	if GF_SavedVariables.logchannels then GF_LogFilters["CHANNEL"] = true end
+	if GF_SavedVariables.logparty then GF_LogFilters["PARTY"] = true GF_LogFilters["RAID"] = true GF_LogFilters["RAID_LEADER"] = true GF_LogFilters["RAID_WARNING"] = true GF_LogFilters["BATTLEGROUND"] = true GF_LogFilters["BATTLEGROUND_LEADER"] = true end
+	if GF_SavedVariables.logguild then GF_LogFilters["GUILD"] = true GF_LogFilters["OFFICER"] = true end
+	if GF_SavedVariables.logwhisper then GF_LogFilters["WHISPER"] = true GF_LogFilters["WHISPER_INFORM"] = true end
+	if GF_SavedVariables.logsay then GF_LogFilters["SAY"] = true end
+	if GF_SavedVariables.logyell then GF_LogFilters["YELL"] = true end
+	if GF_SavedVariables.loghardcore then GF_LogFilters["HARDCORE"] = true GF_LogFilters["SYSTEM"] = true end
 end
 function GF_GetGroupFilters()
 	GF_GroupFilters = {}
@@ -2502,7 +2508,7 @@ function GF_FilterDamage(source,target,damage,over)
 end
 function GF_FilterHealing(source,target,healing,over)
 	local unitid
-	if GF_PlayersCurrentlyInGroup[target] and UnitExists(GF_PlayersCurrentlyInGroup[target]) then unitid = GF_PlayersCurrentlyInGroup[target] elseif GF_PetCurrentlyInGroup[target] and UnitExists(GF_PetCurrentlyInGroup[target][2]) then unitid = GF_PetCurrentlyInGroup[target] end
+	if GF_PlayersCurrentlyInGroup[target] and UnitExists(GF_PlayersCurrentlyInGroup[target]) then unitid = GF_PlayersCurrentlyInGroup[target] elseif GF_PetCurrentlyInGroup[target] and UnitExists(GF_PetCurrentlyInGroup[target][2]) then unitid = GF_PetCurrentlyInGroup[target][2] end
 	if unitid and (SomeoneInCombat or UnitAffectingCombat(GF_PlayersCurrentlyInGroup[source]) or UnitAffectingCombat(unitid)) then
 		if not PlayersInCombat[source] then
 			PlayersInCombat[source] = GetTime()
@@ -3691,22 +3697,22 @@ function GF_GetGroupInformation(arg1,arg2,sentTime,event) -- Searches messages f
 	end
 end
 function GF_GetRolesFromLFGText(arg1)
-	local lfs,lfe,f,d,t,h,p = strfind(arg1,"([LFGM]+):(%w+):(%w+):?(%d?%d?):?(%d?%d?)")
-	if f == "LFM" and t and h and p then
-		return gsub(f.." "..d.." have "..(tonumber(t) > 0 and (t.."tank ") or "")..(tonumber(h) > 0 and (h.."heal ") or "")..(tonumber(p) > 0 and (p.."dps ") or ""),":"," ")
-	elseif t then
-		f = t.." "..f.." "..d
+	local lfs,lfe,prefix,dungeonName,numTank,numHeal,numDPS = strfind(arg1,"([LFGM]+):(%w+):(%w+):?(%d?%d?):?(%d?%d?)")
+	if prefix == "LFM" and dungeonName and numTank and numHeal and numDPS then
+		return gsub(prefix.." "..dungeonName.." have "..(tonumber(numTank) > 0 and (numTank.."tank ") or "")..(tonumber(numHeal) > 0 and (numHeal.."heal ") or "")..(tonumber(numDPS) > 0 and (numDPS.."dps ") or ""),":"," ")
+	elseif numTank then
+		prefix = numTank.." "..prefix.." "..dungeonName
 		lfs = lfe+1
 		while true do
-			lfs,lfe,d = strfind(arg1,"[LFGM]+:(%w+):%w+",lfs)
+			lfs,lfe,dungeonName = strfind(arg1,"[LFGM]+:(%w+):%w+",lfs)
 			if lfs then
-				f = f.."/"..d
+				prefix = prefix.."/"..dungeonName
 				lfs = lfe + 1
 			else
 				break
 			end
 		end
-		return f
+		return prefix
 	else
 		return gsub(arg1,":"," ")
 	end

@@ -1280,7 +1280,7 @@ GF_WORD_FIX_SINGLE_WORD = { -- Single word changes. Mostly typos and simple word
 ["cripts"] = "crypt",["cript"] = "crypt",["cryps"] = "crypt",["crips"] = "crypt",["crysts"] = "crypt",["cryts"] = "crypt",["cryptes"] = "crypt",["criptes"] = "crypt",["criptt"] = "crypt",["crpts"] = "crypt",
 ["krypts"] = "crypt",["krypt"] = "crypt",["crypsa"] = "crypt",["cripth"] = "crypt",["crypth"] = "crypt",["cryptss"] = "crypt",["crypts"] = "crypt",["cyrpts"] = "crypt",["crytps"] = "crypt",
 
-["artals"] = "alahthalas",["lycon"] = "lycan",["lycian"] = "lycan",["gillijims"] = "gillijim",["giljim"] = "gillijim",["giljims"] = "gillijim",["gilijim"] = "gillijim",["gilli"] = "gillijim",["gillijimjim"] = "gillijim",
+["artals"] = "alahthalas",["lycon"] = "lycan",["lycian"] = "lycan",["gillijims"] = "gillijim",["giljim"] = "gillijim",["giljims"] = "gillijim",["gilijim"] = "gillijim",["gilli"] = "gillijim",["gilly"] = "gillijim",["gillijimjim"] = "gillijim",
 ["snarclaw"] = "snarlclaw",["snarlcalw"] = "snarlclaw",["brinthillen"] = "brinthilien",
 
 -- Epoch Single
@@ -3524,7 +3524,7 @@ GF_WORD_QUEST = {
 ["onyattunement"]={0,58,0},["onyxiaattunement"]={0,58,0},["oox"]={0,45,0},["oracledemetria"]={0,60,0},["orboforahil"]={0,40,0},["possiblebutnotprobable"]={0,24,0},["pyrewood"]={0,15,0},["racequest"]={0,32,0},["rakh"]={0,60,0},
 ["rattlegore"]={0,60,0},["ravenwood"]={0,45,0},["repfarm"]={0,60,0},["repfarmepl"]={0,60,0},["repfarmfelpawvillage"]={0,60,0},["repfarmfelwood"]={0,60,0},["repfarmsilithus"]={0,60,0},["repfarmwinterspring"]={0,60,0},
 ["repfarmwpl"]={0,60,0},["revantusk"]={0,51,0},["revantuskvillage"]={0,51,0},["rhokdelarquest"]={0,60,0},["rholgast"]={0,57,0},["rotam"]={0,60,0},["sandersmap"]={0,16,0},["sandshark"]={0,13,0},["satyrfarmhyjal"]={0,60,0},
-["scarletbastion"]={0,60,0},["scarletenclave"]={0,60,0},["scryer"]={0,60,0},["shadowtooth"]={0,61,0},["shadra"]={0,55,0},["sharpbeak"]={0,51,0},["silithusabyssalcouncil"]={0,64,0},
+["scarletbastion"]={0,60,0},["scarletenclave"]={0,60,0},["scryer"]={0,60,0},["shadowtooth"]={0,61,0},["shadra"]={0,55,0},["sharpbeak"]={0,51,0},["silithusabyssalcouncil"]={0,64,0},["kingmosh"]={0,60,0},
 ["silithusdukes"]={0,60,0},["silithushighcouncil"]={0,64,0},["silithuslords"]={0,64,0},["silithusrepfarm"]={0,60,0},["sindall"]={0,37,0},["skaldrenox"]={0,64,0},["smotts"]={0,46,0},["solnius"]={0,60,0},["somnus"]={0,60,0},
 ["sorrowclaw"]={0,41,0},["stoneguardian"]={0,60,0},["stonewatch"]={0,26,0},["stromgarde"]={0,37,0},["succubusquest"]={0,20,0},["swifttravelformquest"]={0,60,0},["sylvanas"]={0,60,0},["targethive"]={0,60,0},["teremus"]={0,60,0},
 ["testofskull"]={0,62,0},["tethis"]={0,43,0},["thunderaan"]={0,64,0},["thunderfuryboss"]={0,64,0},["thunderfuryquest"]={0,64,0},["tidecallerhead"]={0,25,0},["plagueshambler"]={0,30,0},["stalvan"]={0,35,0},
@@ -3820,6 +3820,7 @@ GF_TRADE_PREFIX_SUFFIX = { -- One word before and two words after '[item]'
 ["justgold"] = 1,
 ["nowcrafting"] = 2,
 ["tosell"] = 2,
+["lastcall"] = .5,
 ["tobuy"] = 2,
 ["xsell"] = 2,
 ["xbuy"] = 2,
@@ -3966,7 +3967,7 @@ GF_TRADE_WORD_EXCLUSION = {
 ["whitelevel"] = 1,["whycanti"] = 1,["whyicant"] = 1,["whythereis"] = 1,["wife"] = 1,["willneed"] = 1,["withoutbreaks"] = 1,["withprice"] = .5,["woah"] = 1,["racial"] = .5,["racialthatletsyou"] = 1,
 ["worldchat"] = 1,["worldchat"] = 2,["wouldthat"] = 1,["wtbbf"] = .5,["wtbboyfriend"] = .5,["wtbdankmemes"] = .5,["wtbgf"] = .5,["wtbgirlfriend"] = .5,["wtbmyass"] = .5,["whatifi"] = .25,["madedonation"] = .25,
 ["wtbsmalltwink"] = .5,["wtbspam"] = 1.25,["wtbwife"] = .5,["wtsbf"] = .5,["wtsboyfriend"] = .5,["wtsdankmemes"] = .5,["wtsgf"] = .5,["wtsgirlfriend"] = .5,["wtsmyass"] = .5,["twow"] = .25,["twowstaff"] = .5,
-["wtssmalltwink"] = .5,["wtsspam"] = 1.25,["wtswife"] = .5,["youcanhave"] = .5,["youdonotneed"] = 1,["youdonotunderstand"] = 1,["younotunderstand"] = 1,["youwillhave"] = .5,["dualspec"] = .25,["similar"] = .25,["beatoff"] = .25,["shirton"] = .5,
+["wtssmalltwink"] = .5,["wtsspam"] = 1.25,["wtswife"] = .5,["youcanhave"] = .5,["youdonotneed"] = 1,["youdonotunderstand"] = 1,["younotunderstand"] = 1,["youwillhave"] = .5,["likedualspec"] = .5,["dualspec"] = .5,["similar"] = .25,["beatoff"] = .25,["shirton"] = .5,
 
 ["christian"] = .25,["christians"] = .25,["women"] = .25,["wheredoi"] = .5,["doilearn"] = .5,["wheredoilearn"] = 1,["firstpull"] = .5,["gearlevel"] = .25,["thereisvendor"] = .5,["maketent"] = .5,
 ["myownmessage"] = .5,["cantsay"] = .5,["butifi"] = .5,["anyonehaveongoing"] = 1,["anyonehavegroup"] = 1,["doineed"] = 1,["ordoi"] = .5,["whatisdifference"] = .5,["differencebetween"] = .5,["actuallydoing"] = .5,
