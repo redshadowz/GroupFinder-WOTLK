@@ -273,9 +273,9 @@ function GF_LoadVariables()
 		if GF_PerCharVariables.lfgdps == nil then GF_PerCharVariables.lfgdps = false end
 		if GF_PerCharVariables.lfgheal == nil then GF_PerCharVariables.lfgheal = false end
 		if GF_PerCharVariables.lfgtank == nil then GF_PerCharVariables.lfgtank = false end
-		if GF_PerCharVariables.showtank == nil then GF_PerCharVariables.showtank = true end
-		if GF_PerCharVariables.showhealer == nil then GF_PerCharVariables.showhealer = true end
-		if GF_PerCharVariables.showdps == nil then GF_PerCharVariables.showdps = true end
+		if GF_PerCharVariables.showtank == nil then GF_PerCharVariables.showtank = false end
+		if GF_PerCharVariables.showhealer == nil then GF_PerCharVariables.showhealer = false end
+		if GF_PerCharVariables.showdps == nil then GF_PerCharVariables.showdps = false end
 
 		if GF_PerCharVariables.playsounds == nil then GF_PerCharVariables.playsounds = false end
 		if GF_PerCharVariables.lfgshown == nil then GF_PerCharVariables.lfgshown = false end
@@ -2231,7 +2231,11 @@ function GF_Frame:PLAYER_ENTERING_WORLD() -- When logging in in a group, PLAYER_
 	GF_JoinWorld()
 	GF_Frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	GF_Frame:UnregisterEvent("ADDON_LOADED")
-	for i=1,NUM_CHAT_WINDOWS do getglobal("ChatFrame"..i):SetScript('OnEvent', ChatFrame_OnEvent) end
+	for i=1,NUM_CHAT_WINDOWS do
+		getglobal("ChatFrame"..i):SetScript('OnEvent', ChatFrame_OnEvent)
+		getglobal("ChatFrame"..i).oldAddMessage = getglobal("ChatFrame"..i).AddMessage
+		getglobal("ChatFrame"..i).AddMessage = function(self,msg,...) if msg then self:oldAddMessage(msg,...) end end
+	end
 	UIErrorsFrame:SetScript('OnEvent', function(self,event,...) if not GF_SavedVariables.systemfilter or not GF_Error_Messages[arg1] then old_UIErrorsFrame_OnEvent(self,event,...) end end)
 	if IsAddOnLoaded("LFG") and LFGMain and LFGRoleCheckRoleTank and LFGRoleCheckAcceptRole then LFGRoleCheck:SetScript("OnShow", GF_LFGRoleCheck_OnShow) LFGGroupReady:SetScript("OnShow", GF_LFGGroupReady_OnShow) findGroupButton:SetScript("OnClick", GF_findGroupButton_OnClick) findMoreButton:SetScript("OnClick", GF_findMoreButton_OnClick) leaveQueueButton:SetScript("OnClick", GF_leaveQueueButton_OnClick) end 
 end
